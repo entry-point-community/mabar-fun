@@ -5,6 +5,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
