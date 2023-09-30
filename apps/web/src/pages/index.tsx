@@ -10,7 +10,7 @@ export default function Home() {
     <>
       <HeadMetaData
         ogImageUrl="https://cdn.discordapp.com/attachments/1050790741334569091/1157744570814189709/mabar_fun.png"
-        metaDescription="Platform guide, tutorial, dan main bareng creator favorite lo."
+        metaDescription="Platform MLBB guide, tutorial, dan main bareng creator favorite lo."
       />
       <main className="container flex min-h-screen max-w-screen-md flex-col gap-6 px-4 py-16">
         <div className="flex flex-col gap-4">

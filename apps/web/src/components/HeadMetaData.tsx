@@ -7,12 +7,12 @@ export const HeadMetaData: React.FC<{
   ogImageUrl?: string;
   pathname?: string;
 }> = ({
-  title = 'Suplemen belajar lo, buat ilmu tech industry.',
+  title = 'Platform MLBB guide, tutorial, dan main bareng creator favorite lo.',
   metaDescription,
   ogImageUrl = 'https://cdn.discordapp.com/attachments/1050790741334569091/1151943122117480558/V6_Academy_Banner_Assets.png',
   pathname = '',
 }) => {
-  const defaultTitle = 'V6 Academy';
+  const defaultTitle = 'Mabar.Fun';
 
   const baseUrl =
     process.env.NODE_ENV === 'development'
