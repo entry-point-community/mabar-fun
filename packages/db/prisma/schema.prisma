@@ -10,18 +10,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Make sure fields other that `userId` are either nullable or have default values
-// to avoid SQL errors when a user registers through Supabase Auth
-model Profile {
-  userId   String  @id @db.Uuid
-  username String?
-  Post     Post[]
+enum MlbbRole {
+  EXP
+  JUNGLE
+  MID
+  GOLD
+  ROAM
 }
 
-model Post {
-  id            Int     @id @default(autoincrement())
-  body          String
-  mediaUrl      String?
-  author        Profile @relation(fields: [profileUserId], references: [userId])
-  profileUserId String  @db.Uuid
+model Profile {
+  userId            String              @id @db.Uuid
+  mlbbUsername      String?
+  mlbbUserId        String?
+  mlbbServerId      String?
+  mlbbRole          MlbbRole?
+  profilePictureUrl String?
+  isCreator         Boolean             @default(false)
+  Event             Event[]
+  EventRegistration EventRegistration[]
+  EventTeamPlayer   EventTeamPlayer[]
+}
+
+model Event {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  description       String
+  creator           Profile             @relation(fields: [profileUserId], references: [userId])
+  profileUserId     String              @db.Uuid
+  startDate         DateTime
+  endDate           DateTime
+  isActive          Boolean             @default(true)
+  EventRegistration EventRegistration[]
+  EventTeam         EventTeam[]
+}
+
+model EventRegistration {
+  event         Event    @relation(fields: [eventId], references: [id])
+  player        Profile  @relation(fields: [profileUserId], references: [userId])
+  eventId       Int
+  profileUserId String   @db.Uuid
+  role          MlbbRole
+
+  @@id([eventId, profileUserId])
+}
+
+model EventTeam {
+  id              Int               @id @default(autoincrement())
+  event           Event             @relation(fields: [eventId], references: [id])
+  eventId         Int
+  EventTeamPlayer EventTeamPlayer[]
+}
+
+model EventTeamPlayer {
+  team          EventTeam @relation(fields: [eventTeamId], references: [id])
+  player        Profile   @relation(fields: [profileUserId], references: [userId])
+  role          MlbbRole
+  eventTeamId   Int
+  profileUserId String    @db.Uuid
+
+  @@id([eventTeamId, profileUserId])
 }

@@ -9,6 +9,8 @@ import { createClient } from '@supabase/supabase-js';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ApiClientProvider } from '@v6/api';
 
+import { Footer } from '~/components/Footer';
+import { Header } from '~/components/Header';
 import { ThemeProvider } from '~/components/theme-provider';
 import { env } from '~/env.mjs';
 import { AxiosManager } from '~/lib/axios';
@@ -79,7 +81,9 @@ export default function App({ Component, pageProps }: AppProps) {
           </Head>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <main className={`${inter.variable} ${poppins.variable} font-sans`}>
+              <Header />
               <Component {...pageProps} />
+              <Footer />
             </main>
           </ThemeProvider>
         </QueryClientProvider>
