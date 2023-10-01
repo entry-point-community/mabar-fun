@@ -5,7 +5,7 @@ import { AuthSlice, createAuthSlice } from './auth';
 
 export type IGlobalStore = AuthSlice;
 
-export const STORAGE_KEY = 'v6-stack_storage';
+export const STORAGE_KEY = 'mabar-fun_storage';
 
 export const useStore = create<
   IGlobalStore,

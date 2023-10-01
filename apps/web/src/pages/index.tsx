@@ -1,6 +1,6 @@
 import { IoBook, IoGameController } from 'react-icons/io5';
 
-import { HeadMetaData } from '~/components/HeadMetaData';
+import { HeadMetaData } from '~/components/meta/HeadMetaData';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { FeatureShowcaseItem } from '~/features/home/components';

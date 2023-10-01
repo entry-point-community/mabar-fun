@@ -1,11 +1,11 @@
 import Link from 'next/link';
-import { ChevronRightIcon } from '@radix-ui/react-icons';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
-import { Avatar, AvatarImage } from './ui/avatar';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import { ScrollArea } from './ui/scroll-area';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from './ui/sheet';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import { ScrollArea } from '../ui/scroll-area';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
+import { UserProfileCard } from './UserProfileCard';
 
 interface SheetMenuProps {
   open: boolean;
@@ -13,6 +13,13 @@ interface SheetMenuProps {
 }
 
 export const SheetMenu: React.FC<SheetMenuProps> = ({ open, onOpenChange }) => {
+  const supabaseClient = useSupabaseClient();
+  const user = useUser();
+
+  const logout = () => {
+    supabaseClient.auth.signOut();
+  };
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-full sm:max-w-sm">
@@ -46,27 +53,29 @@ export const SheetMenu: React.FC<SheetMenuProps> = ({ open, onOpenChange }) => {
           </ScrollArea>
 
           <div className="border-t-2">
-            <div className="my-2 flex items-center justify-between rounded-md p-4 hover:cursor-pointer hover:bg-gray-900">
-              <div className="flex items-center gap-4 ">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src="https://cdn.discordapp.com/attachments/1050790741334569091/1157928772754997269/avatar.jpg" />
-                </Avatar>
-                <div className="flex flex-col justify-center">
-                  <p className="text-sm text-muted-foreground">
-                    161432423 (1234)
-                  </p>
-                  <p className="truncate">mantra hujan</p>
-                </div>
-              </div>
-              <ChevronRightIcon height={24} width={24} />
-            </div>
+            {user ? (
+              <>
+                {/* TODO: Refactor this to a separate component */}
+                <UserProfileCard className="my-2 w-full" />
 
-            <Button
-              variant="ghost"
-              className="w-full font-semibold text-red-500 hover:bg-red-900 hover:text-white"
-            >
-              Logout
-            </Button>
+                <Button
+                  onClick={logout}
+                  variant="ghost"
+                  className="w-full font-semibold text-red-500 hover:bg-red-900 hover:text-white"
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Link href="/auth/login">
+                <Button
+                  onClick={() => onOpenChange(false)}
+                  className="my-2 w-full"
+                >
+                  Login
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </SheetContent>
