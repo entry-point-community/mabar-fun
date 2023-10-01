@@ -17,7 +17,7 @@ export default function Home() {
           <h1 className="text-center font-heading text-5xl font-bold lg:text-7xl">
             Mabar.<span className="text-primary">Fun</span>
           </h1>
-          <p className="text-center text-2xl lg:text-4xl">
+          <p className="text-center text-2xl lg:text-3xl">
             Platform guide, tutorial, dan main bareng creator favorite lo.
           </p>
         </div>
@@ -28,7 +28,7 @@ export default function Home() {
           </Button>
         </div>
 
-        <section className="mt-8">
+        <section className="mt-16">
           <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
             <FeatureShowcaseItem
               heading="Mabar sama creator favorite lo"

@@ -70,24 +70,32 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <SessionContextProvider
-      supabaseClient={supabaseClient}
-      initialSession={pageProps.initialSession}
-    >
-      <ApiClientProvider axiosInstance={axiosManager.axios}>
-        <QueryClientProvider client={queryClient}>
-          <Head>
-            <title>V6 Academy - Learn to Code the Practical Way</title>
-          </Head>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            <main className={`${inter.variable} ${poppins.variable} font-sans`}>
-              <Header />
-              <Component {...pageProps} />
-              <Footer />
-            </main>
-          </ThemeProvider>
-        </QueryClientProvider>
-      </ApiClientProvider>
-    </SessionContextProvider>
+    <>
+      <style
+        jsx
+        global
+      >{`:root { --font-inter: ${inter.style.fontFamily};}}`}</style>
+      <SessionContextProvider
+        supabaseClient={supabaseClient}
+        initialSession={pageProps.initialSession}
+      >
+        <ApiClientProvider axiosInstance={axiosManager.axios}>
+          <QueryClientProvider client={queryClient}>
+            <Head>
+              <title>V6 Academy - Learn to Code the Practical Way</title>
+            </Head>
+            <ThemeProvider attribute="class" forcedTheme="dark">
+              <main
+                className={`${inter.variable} ${poppins.variable} font-sans`}
+              >
+                <Header />
+                <Component {...pageProps} />
+                <Footer />
+              </main>
+            </ThemeProvider>
+          </QueryClientProvider>
+        </ApiClientProvider>
+      </SessionContextProvider>
+    </>
   );
 }
