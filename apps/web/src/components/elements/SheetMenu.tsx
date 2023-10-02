@@ -55,8 +55,9 @@ export const SheetMenu: React.FC<SheetMenuProps> = ({ open, onOpenChange }) => {
           <div className="border-t-2">
             {user ? (
               <>
-                {/* TODO: Refactor this to a separate component */}
-                <UserProfileCard className="my-2 w-full" />
+                <Link href="/profile">
+                  <UserProfileCard className="my-2 w-full" />
+                </Link>
 
                 <Button
                   onClick={logout}

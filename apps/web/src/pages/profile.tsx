@@ -20,35 +20,46 @@ const ProfilePage = () => {
     <>
       <HeadMetaData />
       <main className="container min-h-screen max-w-screen-md">
-        <div className="flex gap-4">
-          <Avatar className="h-24 w-24">
-            <AvatarImage src="https://cdn.discordapp.com/attachments/1050790741334569091/1157928772754997269/avatar.jpg" />
-          </Avatar>
-          <div className="flex flex-col justify-center">
-            <h3 className="truncate text-2xl font-semibold">
-              {profile?.data.displayName}
-            </h3>
-            <div className="flex items-center">
-              <IoGameController />
-              <h5 className="ml-2">{profile?.data.mlbbUsername}</h5>
+        <div className="flex flex-col gap-4 lg:gap-8">
+          <div className="flex justify-between">
+            <div className="flex gap-4">
+              <Avatar className="h-16 w-16 sm:h-24 sm:w-24">
+                <AvatarImage src="https://cdn.discordapp.com/attachments/1050790741334569091/1157928772754997269/avatar.jpg" />
+              </Avatar>
+              <div className="flex flex-col justify-center truncate">
+                <h3 className="truncate text-xl font-semibold sm:text-2xl">
+                  {profile?.data.displayName}
+                </h3>
+                <div className="flex items-center">
+                  <IoGameController />
+                  <h5 className="ml-2">{profile?.data.mlbbUsername}</h5>
+                </div>
+              </div>
             </div>
+            <Button
+              className="hidden self-center lg:inline-block"
+              variant="secondary"
+            >
+              Edit Profile
+            </Button>
           </div>
-        </div>
 
-        <Button className="mt-4 w-full" variant="secondary">
-          Edit Profile
-        </Button>
+          <Button className="w-full lg:hidden" variant="secondary">
+            Edit Profile
+          </Button>
 
-        <div className="mt-4 flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <IoGlobe /> {profile?.data.mlbbUserId} ({profile?.data.mlbbServerId}
-            )
-          </div>
-          <div className="flex items-center gap-2">
-            <PiSwordBold /> {mlbbRoleEnumToText(profile?.data.mlbbRole)}
-          </div>
-          <div className="flex items-center gap-2">
-            <IoPerson /> {renderFavoriteHeroes()}
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <IoGlobe /> {profile?.data.mlbbUserId} (
+              {profile?.data.mlbbServerId})
+            </div>
+            <div className="flex items-center gap-2">
+              <PiSwordBold />
+              {mlbbRoleEnumToText(profile?.data.mlbbRole)}
+            </div>
+            <div className="flex items-center gap-2">
+              <IoPerson /> {renderFavoriteHeroes()}
+            </div>
           </div>
         </div>
       </main>
