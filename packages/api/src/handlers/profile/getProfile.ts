@@ -39,7 +39,7 @@ export const useGetProfileQuery = ({ config }: UseGetProfileQueryOptions) => {
 
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     ...config,
-    queryKey: ['courses'],
+    queryKey: ['profile'],
     queryFn: () => getProfile({}, { axios }),
   });
 };
