@@ -2,8 +2,8 @@
   "name": "@v6/db",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "types": "index.ts",
+  "main": "./dist/index.js",
+  "types": "./index.ts",
   "scripts": {
     "db:generate": "npx prisma generate",
     "db:push": "npx prisma db push --skip-generate",
