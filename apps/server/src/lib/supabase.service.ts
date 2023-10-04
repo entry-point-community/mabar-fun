@@ -10,6 +10,7 @@ import { Request } from 'express';
 import { ExtractJwt } from 'passport-jwt';
 
 import { config } from '~/config';
+import { SupabaseBucket } from '~/types/supabase-bucket.enum';
 
 @Injectable({ scope: Scope.REQUEST })
 export class SupabaseService {
@@ -43,7 +44,7 @@ export class SupabaseService {
   }
 
   public async uploadToPublicStorage(
-    bucketName: string,
+    bucketName: SupabaseBucket,
     file: Express.Multer.File,
     fileName?: string,
   ) {

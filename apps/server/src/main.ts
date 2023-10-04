@@ -1,13 +1,12 @@
 import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './http-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'log', 'debug', 'verbose', 'warn'],
-  });
+  const app = await NestFactory.create(AppModule);
 
   app.use(helmet());
   app.enableCors({
@@ -18,6 +17,10 @@ async function bootstrap() {
       'https://www.v6-academy.com',
     ],
   });
+
+  const httpAdapterHost = app.get(HttpAdapterHost);
+
+  app.useGlobalFilters(new HttpExceptionFilter(httpAdapterHost));
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 

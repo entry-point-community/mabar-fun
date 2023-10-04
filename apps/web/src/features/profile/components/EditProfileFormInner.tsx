@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useGetProfileQuery } from '@v6/api';
 import { MlbbRole } from '@v6/db';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { mlbbRoleEnumToText } from '~/utils/role';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
@@ -30,7 +31,7 @@ import {
 
 type EditProfileFormInnerProps = {
   onSubmit: (
-    values: EditProfileFormSchema & { profilePictureFile: File | null },
+    values: EditProfileFormSchema & { profilePictureFile?: File },
   ) => void;
   onCancel: () => void;
 };
@@ -43,11 +44,7 @@ export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
     useState<File | null>(null);
   const inputProfilePictureRef = useRef<HTMLInputElement>(null);
 
-  const { data: profile } = useGetProfileQuery({
-    config: {
-      staleTime: Infinity,
-    },
-  });
+  const { data: profile } = useGetProfileQuery({});
 
   const form = useForm<EditProfileFormSchema>({
     defaultValues: {
@@ -63,9 +60,22 @@ export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
   const handleInputProfilePictureChange: ChangeEventHandler<
     HTMLInputElement
   > = (event) => {
+    const MAX_SIZE = 5 * 1024 * 1024;
+
     if (event.target.files?.length) {
+      if (event.target.files[0].size > MAX_SIZE) {
+        return toast.error('Batas file size 5 MB');
+      }
+
       setSelectedProfilePictureFile(event.target.files[0]);
     }
+  };
+
+  const renderProfilePictureUrl = () => {
+    if (selectedProfilePictureFile)
+      return URL.createObjectURL(selectedProfilePictureFile);
+
+    return profile?.data.profilePictureUrl || '';
   };
 
   return (
@@ -75,22 +85,14 @@ export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
           <AvatarFallback>
             {profile?.data.displayName?.charAt(0)}
           </AvatarFallback>
-          <AvatarImage
-            src={
-              (selectedProfilePictureFile &&
-                URL.createObjectURL(selectedProfilePictureFile)) ||
-              ''
-            }
-          />
+          <AvatarImage src={renderProfilePictureUrl()} />
         </Avatar>
-
         <Input
           onChange={handleInputProfilePictureChange}
           type="file"
           className="hidden"
           ref={inputProfilePictureRef}
         />
-
         <div className="flex flex-col gap-2">
           <Button
             onClick={() => inputProfilePictureRef.current?.click()}
@@ -113,7 +115,7 @@ export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
           onSubmit={form.handleSubmit((values) =>
             onSubmit({
               ...values,
-              profilePictureFile: selectedProfilePictureFile,
+              profilePictureFile: selectedProfilePictureFile || undefined,
             }),
           )}
           className="flex flex-col gap-1"

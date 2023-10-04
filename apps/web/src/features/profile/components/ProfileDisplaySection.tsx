@@ -3,7 +3,7 @@ import { IoGameController, IoGlobe } from 'react-icons/io5';
 import { PiSwordBold } from 'react-icons/pi';
 
 import { mlbbRoleEnumToText } from '~/utils/role';
-import { Avatar, AvatarImage } from '~/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
 import { ProfileInfoItem } from '.';
 
@@ -14,18 +14,17 @@ interface ProfileDisplaySection {
 export const ProfileDisplaySection: React.FC<ProfileDisplaySection> = ({
   onEditProfile,
 }) => {
-  const { data: profile } = useGetProfileQuery({
-    config: {
-      staleTime: Infinity,
-    },
-  });
+  const { data: profile } = useGetProfileQuery({});
 
   return (
     <div className="flex flex-col gap-4 lg:gap-8">
       <div className="flex justify-between">
         <div className="flex gap-4">
           <Avatar className="h-16 w-16 sm:h-24 sm:w-24">
-            <AvatarImage src="https://cdn.discordapp.com/attachments/1050790741334569091/1157928772754997269/avatar.jpg" />
+            <AvatarFallback>
+              {profile?.data.displayName?.charAt(0)}
+            </AvatarFallback>
+            <AvatarImage src={profile?.data.profilePictureUrl || ''} />
           </Avatar>
           <div className="flex flex-col justify-center truncate">
             <h3 className="truncate text-xl font-semibold sm:text-2xl">

@@ -1,11 +1,32 @@
 import { useState } from 'react';
+import { useEditProfileMutation } from '@v6/api';
 
 import { HeadMetaData } from '~/components/meta/HeadMetaData';
-import { EditProfileFormInner } from '~/features/profile/components';
-import { ProfileDisplaySection } from '~/features/profile/components/ProfileDisplaySection';
+import {
+  EditProfileFormInner,
+  ProfileDisplaySection,
+} from '~/features/profile/components';
+import { EditProfileFormSchema } from '~/features/profile/forms/edit-profile';
+import { queryClient } from '~/lib/react-query';
 
 const ProfilePage = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
+
+  const { mutateAsync: editProfileMutate } = useEditProfileMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['profile'],
+      });
+    },
+  });
+
+  const handleEditProfileSubmit = async (
+    values: EditProfileFormSchema & { profilePictureFile?: File },
+  ) => {
+    await editProfileMutate(values);
+    setIsEditMode(false);
+  };
+
   return (
     <>
       <HeadMetaData />
@@ -14,7 +35,7 @@ const ProfilePage = () => {
           <>
             <EditProfileFormInner
               onCancel={() => setIsEditMode(false)}
-              onSubmit={(values) => console.log(values)}
+              onSubmit={handleEditProfileSubmit}
             />
           </>
         ) : (

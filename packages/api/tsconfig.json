@@ -8,7 +8,10 @@
     "paths": {
       "~/*": ["./src/*"]
     },
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "composite": true
   },
   "exclude": ["node_modules", "dist/"]
 }
