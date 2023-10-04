@@ -3,8 +3,8 @@ import { Profile } from '@v6/db';
 import { EditProfileDTO } from '@v6/dto';
 import defaultAxios, { AxiosPromise } from 'axios';
 
-import { ApiFn, MutationConfig } from '~/lib/react-query';
-import { useApiClient } from '~/providers';
+import { ApiFn, MutationConfig } from '../../lib/react-query';
+import { useApiClient } from '../../providers';
 
 type EditProfileDTOWithFile = EditProfileDTO & { profilePictureFile?: File };
 

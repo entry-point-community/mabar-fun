@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { Prisma, Profile } from '@v6/db';
+import { Prisma } from '@v6/db';
 import defaultAxios, { AxiosPromise } from 'axios';
 
-import { ApiFn, ExtractFnReturnType, QueryConfig } from '~/lib/react-query';
-import { useApiClient } from '~/providers';
+import { ApiFn, ExtractFnReturnType, QueryConfig } from '../../lib/react-query';
+import { useApiClient } from '../../providers';
 
 const profileWithFavoriteHeroes = Prisma.validator<Prisma.ProfileDefaultArgs>()(
   {

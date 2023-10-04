@@ -5,9 +5,6 @@
     "jsx": "preserve",
     "esModuleInterop": true,
     "declaration": true,
-    "paths": {
-      "~/*": ["./src/*"]
-    },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
