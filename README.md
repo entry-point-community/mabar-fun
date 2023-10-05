@@ -117,10 +117,23 @@ inside the `server` folder to shutdown the containers. For more guides and refer
 
 #### 4. Prisma Migrate
 
-Create a Prisma migration to sync changes in your `schema.prisma` to your database. Navigate to the `db` package and run this command.
+Create a Prisma migration to sync changes in your `schema.prisma` to your database. Navigate to the `db` folder inside the `packages` folder and run this command.
 
 ```sh
-pnpm db:migrate
+#inside root level project directory
+
+# non-windows users
+cd ./packages && cd ./db && pnpm db:migration
+
+# windows users
+cd .\packages\
+cd .\db\
+pnpm db:migration
+```
+
+```sh
+# or simply just like this if u already inside the *db* folder 👇
+pnpm db:migration
 ```
 
 #### 5. Supabase Auth
