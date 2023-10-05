@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    container_name: mabar-fun-postgres
+    ports:
+      - '54322:5432'
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mabar-fun-test
+    volumes:
+      - data_postgres:/var/lib/postgresql/data
+
+volumes:
+  data_postgres:
