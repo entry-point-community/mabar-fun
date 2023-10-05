@@ -26,9 +26,11 @@ model Profile {
   mlbbRole          MlbbRole?
   profilePictureUrl String?
   isCreator         Boolean             @default(false)
+  displayName       String?
   Event             Event[]
   EventRegistration EventRegistration[]
   EventTeamPlayer   EventTeamPlayer[]
+  ProfileHero       ProfileHero[]
 }
 
 model Event {
@@ -69,4 +71,20 @@ model EventTeamPlayer {
   profileUserId String    @db.Uuid
 
   @@id([eventTeamId, profileUserId])
+}
+
+model Hero {
+  id          Int           @id @default(autoincrement())
+  name        String
+  imageUrl    String
+  ProfileHero ProfileHero[]
+}
+
+model ProfileHero {
+  hero          Hero    @relation(fields: [heroId], references: [id])
+  profile       Profile @relation(fields: [profileUserId], references: [userId])
+  heroId        Int
+  profileUserId String  @db.Uuid
+
+  @@id([heroId, profileUserId])
 }

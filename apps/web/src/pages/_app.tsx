@@ -8,6 +8,7 @@ import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { createClient } from '@supabase/supabase-js';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ApiClientProvider } from '@v6/api';
+import { Toaster } from 'sonner';
 
 import { Footer } from '~/components/elements/Footer';
 import { Header } from '~/components/elements/Header';
@@ -92,6 +93,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 <Header />
                 <Component {...pageProps} />
                 <Footer />
+                <Toaster richColors />
               </main>
             </ThemeProvider>
           </QueryClientProvider>

@@ -12,6 +12,7 @@
   "author": "theodevoid",
   "license": "ISC",
   "dependencies": {
+    "@v6/db": "workspace:^",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0"
   },

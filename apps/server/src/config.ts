@@ -22,4 +22,13 @@ export const config = {
   get supabaseJwtKey() {
     return getRequired('SUPABASE_JWT_SECRET').asString();
   },
+  get apiGamesMerchantId() {
+    return getRequired('API_GAMES_MERCHANT');
+  },
+  get apiGamesSecret() {
+    return getRequired('API_GAMES_SECRET');
+  },
+  get apiGamesSignature() {
+    return getRequired('API_GAMES_SIGNATURE');
+  },
 };
