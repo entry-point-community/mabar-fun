@@ -17,5 +17,6 @@
     "turbo": "latest"
   },
   "name": "v6-stack",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "packageManager": "pnpm@8.6.6"
 }
