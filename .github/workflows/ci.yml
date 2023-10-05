@@ -1,0 +1,43 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "development" ]
+  pull_request:
+    branches: [ "development" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2.4.0
+            
+    - name: Install dependencies
+      run: pnpm install
+    - name: Lint Server
+      working-directory: apps/server
+      run: pnpm run lint:ci
+    - name: Start testing docker container
+      working-directory: apps/server
+      run: docker compose up -d
+    - name: Run pretest
+      working-directory: apps/server
+      run: pnpm pretest
+    - name: Run tests
+      working-directory: apps/server
+      run: pnpm run test
+    - name: Stop docker containers
+      working-directory: apps/server
+      run: docker-compose down
+      
