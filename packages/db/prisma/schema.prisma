@@ -47,12 +47,13 @@ model Event {
   profileUserId         String              @db.Uuid
   startRegistrationDate DateTime
   endRegistrationDate   DateTime
-  isActive              Boolean             @default(true)
+  isLive                Boolean             @default(false)
   EventRegistration     EventRegistration[]
   EventTeam             EventTeam[]
   bannerImageUrl        String
   status                EventStatus
   totalMatches          Int                 @default(1)
+  livestreamUrl         String?
 }
 
 model EventRegistration {

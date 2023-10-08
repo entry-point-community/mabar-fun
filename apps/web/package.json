@@ -35,6 +35,7 @@
     "@v6/api": "workspace:*",
     "@v6/db": "workspace:*",
     "@v6/dto": "workspace:*",
+    "@v6/supabase": "workspace:^",
     "autoprefixer": "10.4.15",
     "axios": "^1.5.0",
     "class-variance-authority": "^0.7.0",

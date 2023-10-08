@@ -14,7 +14,7 @@ const nextConfig = {
       },
     ],
   },
-  transpilePackages: ['@v6/db', '@v6/dto', '@v6/api'],
+  transpilePackages: ['@v6/db', '@v6/dto', '@v6/api', '@v6/supabase'],
   webpack: (config, options) => {
     if (options.isServer) {
       config.externals = ['@tanstack/react-query', ...config.externals];
