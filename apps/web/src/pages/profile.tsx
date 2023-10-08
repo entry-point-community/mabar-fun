@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useEditProfileMutation } from '@v6/api';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 import { AuthenticatedRoute } from '~/components/guards/AuthenticatedRoute';
 import { HeadMetaData } from '~/components/meta/HeadMetaData';
@@ -24,8 +26,17 @@ const ProfilePage = () => {
   const handleEditProfileSubmit = async (
     values: EditProfileFormSchema & { profilePictureFile?: File },
   ) => {
-    await editProfileMutate(values);
-    setIsEditMode(false);
+    try {
+      await editProfileMutate(values);
+      setIsEditMode(false);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const err = error as AxiosError<{ errors: string[] }>;
+
+        toast.error(err.response?.data.errors[0]);
+        return;
+      }
+    }
   };
 
   return (
