@@ -33,17 +33,26 @@ model Profile {
   ProfileHero       ProfileHero[]
 }
 
+enum EventStatus {
+  WAITING_FOR_PLAYERS
+  PLAYING
+  ENDED
+}
+
 model Event {
-  id                Int                 @id @default(autoincrement())
-  title             String
-  description       String
-  creator           Profile             @relation(fields: [profileUserId], references: [userId])
-  profileUserId     String              @db.Uuid
-  startDate         DateTime
-  endDate           DateTime
-  isActive          Boolean             @default(true)
-  EventRegistration EventRegistration[]
-  EventTeam         EventTeam[]
+  id                    Int                 @id @default(autoincrement())
+  title                 String
+  description           String
+  creator               Profile             @relation(fields: [profileUserId], references: [userId])
+  profileUserId         String              @db.Uuid
+  startRegistrationDate DateTime
+  endRegistrationDate   DateTime
+  isActive              Boolean             @default(true)
+  EventRegistration     EventRegistration[]
+  EventTeam             EventTeam[]
+  bannerImageUrl        String
+  status                EventStatus
+  totalMatches          Int                 @default(1)
 }
 
 model EventRegistration {
@@ -57,10 +66,13 @@ model EventRegistration {
 }
 
 model EventTeam {
-  id              Int               @id @default(autoincrement())
-  event           Event             @relation(fields: [eventId], references: [id])
-  eventId         Int
-  EventTeamPlayer EventTeamPlayer[]
+  id               Int               @id @default(autoincrement())
+  event            Event             @relation(fields: [eventId], references: [id])
+  eventId          Int
+  EventTeamPlayer  EventTeamPlayer[]
+  EventMatches     EventMatches[]
+  HomeEventMatches EventMatches[]    @relation(name: "homeTeam")
+  AwayEventMatches EventMatches[]    @relation(name: "awayTeam")
 }
 
 model EventTeamPlayer {
@@ -71,6 +83,22 @@ model EventTeamPlayer {
   profileUserId String    @db.Uuid
 
   @@id([eventTeamId, profileUserId])
+}
+
+enum EventMatchesType {
+  CUSTOM
+  PUBLIC
+}
+
+model EventMatches {
+  id              Int        @id @default(autoincrement())
+  homeTeam        EventTeam  @relation(fields: [homeEventTeamId], references: [id], name: "homeTeam")
+  homeEventTeamId Int
+  awayTeam        EventTeam? @relation(fields: [awayEventTeamId], references: [id], name: "awayTeam")
+  awayEventTeamId Int?
+  EventTeam       EventTeam? @relation(fields: [eventTeamId], references: [id])
+  eventTeamId     Int?
+  createdAt       DateTime   @default(now())
 }
 
 model Hero {
