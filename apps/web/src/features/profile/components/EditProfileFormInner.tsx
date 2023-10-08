@@ -28,6 +28,7 @@ import {
   EditProfileFormSchema,
   editProfileFormSchema,
 } from '../forms/edit-profile';
+import { useVerifyMlbbAccount } from '../hooks';
 
 type EditProfileFormInnerProps = {
   onSubmit: (
@@ -56,6 +57,12 @@ export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
     resolver: zodResolver(editProfileFormSchema),
     reValidateMode: 'onChange',
   });
+
+  const { fetchMlbbAccountUsername, hasVerifiedAccount, mlbbAccountUsername } =
+    useVerifyMlbbAccount({
+      mlbbServerId: form.watch('mlbbServerId'),
+      mlbbUserId: form.watch('mlbbUserId'),
+    });
 
   const handleInputProfilePictureChange: ChangeEventHandler<
     HTMLInputElement
@@ -133,32 +140,58 @@ export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="mlbbUserId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>MLBB User ID</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="mlbbServerId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>MLBB Server ID</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
+          <div className="my-2 flex flex-col gap-1 rounded border p-4">
+            <p className="mb-2 font-semibold">Mobile Legends ID</p>
+            <FormField
+              control={form.control}
+              name="mlbbUserId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>MLBB User ID</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="mlbbServerId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>MLBB Server ID</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormItem>
+              <FormLabel>MLBB Username</FormLabel>
+              <FormControl>
+                <Input
+                  disabled
+                  placeholder={
+                    mlbbAccountUsername || profile?.data.mlbbUsername || ''
+                  }
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              className="mt-2 self-start"
+              onClick={fetchMlbbAccountUsername}
+            >
+              Verifikasi Akun
+            </Button>
+          </div>
           <FormField
             control={form.control}
             name="mlbbRole"
@@ -187,7 +220,7 @@ export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
             )}
           />
           <div className="mt-4 flex gap-2">
-            <Button size="sm" type="submit">
+            <Button size="sm" type="submit" disabled={!hasVerifiedAccount}>
               Save
             </Button>
             <Button onClick={onCancel} size="sm" variant="secondary">
