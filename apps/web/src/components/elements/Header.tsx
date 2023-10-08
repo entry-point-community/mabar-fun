@@ -47,7 +47,7 @@ export const Header = () => {
                 <NavigationMenuTrigger>Gas Mabar</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="flex w-[400px] flex-col gap-4 p-4">
-                    <Link href="/">
+                    <Link href="/events">
                       Event Mabar{' '}
                       <Badge className="ml-2" variant="secondary">
                         🔴 Live
