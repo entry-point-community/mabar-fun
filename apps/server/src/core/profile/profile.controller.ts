@@ -6,12 +6,13 @@ import {
   NotFoundException,
   ParseFilePipe,
   Patch,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { EditProfileDTO } from '@v6/dto';
+import { EditProfileDTO, GetMlbbAccountDTO } from '@v6/dto';
 
 import { SupabaseGuard } from '~/core/auth/supabase/supabase.guard';
 import { AuthUser } from '~/core/auth/types';
@@ -55,5 +56,19 @@ export class ProfileController {
     );
 
     return profile;
+  }
+
+  @Get('/mlbb-account')
+  @UseGuards(SupabaseGuard)
+  public async getMlbbAccountUsername(
+    @Query() { mlbbServerId, mlbbUserId }: GetMlbbAccountDTO,
+  ) {
+    const mlbbAccountUsername =
+      await this.profileService.getMlbbAccountUsername(
+        mlbbUserId,
+        mlbbServerId,
+      );
+
+    return mlbbAccountUsername;
   }
 }

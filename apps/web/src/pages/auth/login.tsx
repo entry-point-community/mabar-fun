@@ -1,17 +1,15 @@
+import { GuestRoute } from '~/components/guards/GuestRoute';
 import { HeadMetaData } from '~/components/meta/HeadMetaData';
 import { Separator } from '~/components/ui/separator';
 import {
   SignInWithGithubButton,
   SignInWithGoogleButton,
 } from '~/features/auth/components';
-import { useGuestRoute } from '~/hooks/useGuestRoute';
 
 const LoginPage = () => {
-  useGuestRoute();
-
   return (
-    <>
-      <HeadMetaData />
+    <GuestRoute>
+      <HeadMetaData title="Sign In" />
       <main className="container min-h-screen max-w-lg">
         <div className="flex flex-col gap-12 rounded border p-8">
           <h1 className="text-center font-heading text-3xl font-semibold">
@@ -28,7 +26,7 @@ const LoginPage = () => {
           </div>
         </div>
       </main>
-    </>
+    </GuestRoute>
   );
 };
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useEditProfileMutation } from '@v6/api';
 
+import { AuthenticatedRoute } from '~/components/guards/AuthenticatedRoute';
 import { HeadMetaData } from '~/components/meta/HeadMetaData';
 import {
   EditProfileFormInner,
@@ -28,8 +29,8 @@ const ProfilePage = () => {
   };
 
   return (
-    <>
-      <HeadMetaData />
+    <AuthenticatedRoute>
+      <HeadMetaData title="Profile" />
       <main className="container min-h-screen max-w-screen-md">
         {isEditMode ? (
           <>
@@ -42,7 +43,7 @@ const ProfilePage = () => {
           <ProfileDisplaySection onEditProfile={() => setIsEditMode(true)} />
         )}
       </main>
-    </>
+    </AuthenticatedRoute>
   );
 };
 
