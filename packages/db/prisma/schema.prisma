@@ -48,6 +48,7 @@ model Event {
   startRegistrationDate DateTime
   endRegistrationDate   DateTime
   isLive                Boolean             @default(false)
+  startLiveDate         DateTime?
   EventRegistration     EventRegistration[]
   EventTeam             EventTeam[]
   bannerImageUrl        String
