@@ -17,15 +17,23 @@ export class EventService {
       take: limit,
     };
 
-    const [events, count] = await this.prismaService.$transaction([
+    const [records, count] = await this.prismaService.$transaction([
       this.prismaService.event.findMany({
         ...paginationParams,
+        include: {
+          creator: true,
+          _count: {
+            select: {
+              EventRegistration: true,
+            },
+          },
+        },
       }),
       this.prismaService.event.count({
         ...paginationParams,
       }),
     ]);
 
-    return { events, count };
+    return { records, count };
   }
 }

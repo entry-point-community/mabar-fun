@@ -35,17 +35,17 @@ describe('EventService', () => {
 
   describe('getEvents', () => {
     it('should return a list of events', async () => {
-      const { events, count } = await eventService.getEvents({});
+      const { records, count } = await eventService.getEvents({});
 
-      expect(events.length).toBe(5);
+      expect(records.length).toBe(5);
       expect(count).toBe(5);
     });
 
     describe('when given pagination params', () => {
       it('should return limited list of events', async () => {
-        const { events, count } = await eventService.getEvents({ limit: 3 });
+        const { records, count } = await eventService.getEvents({ limit: 3 });
 
-        expect(events.length).toBe(3);
+        expect(records.length).toBe(3);
         expect(count).toBe(3);
       });
     });

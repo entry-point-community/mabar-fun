@@ -1,9 +1,13 @@
+import { useGetEventsQuery } from '@v6/api';
+
 import { HeadMetaData } from '~/components/meta/HeadMetaData';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { EventCard } from '~/features/events/components';
 
 const EventsPage = () => {
+  const eventsQuery = useGetEventsQuery({ limit: 10 });
+
   return (
     <>
       <HeadMetaData title="Events" />
@@ -29,33 +33,20 @@ const EventsPage = () => {
 
           {/* Event Card */}
           <div className="grid grid-cols-1 gap-12 md:gap-6 lg:grid-cols-2">
-            <EventCard
-              description="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Omnis nam dolor fuga enim architecto facere quas porro id iste minima."
-              title="Mabar bareng bocil provok"
-              displayName="Theodore Gwanteng"
-              username="theodepuid"
-              playersJoined={20}
-              totalMatches={7}
-              profilePictureUrl="https://cdn.discordapp.com/attachments/857608852374945793/1161658445796233308/thumbnail_void_scale_up.jpg"
-            />
-            <EventCard
-              description="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Omnis nam dolor fuga enim architecto facere quas porro id iste minima."
-              title="Mabar bareng bocil provok"
-              displayName="Theodore Gwanteng"
-              username="theodepuid"
-              playersJoined={20}
-              totalMatches={7}
-              profilePictureUrl="https://cdn.discordapp.com/attachments/857608852374945793/1161658445796233308/thumbnail_void_scale_up.jpg"
-            />
-            <EventCard
-              description="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Omnis nam dolor fuga enim architecto facere quas porro id iste minima."
-              title="Mabar bareng bocil provok"
-              displayName="Theodore Gwanteng"
-              username="theodepuid"
-              playersJoined={20}
-              totalMatches={7}
-              profilePictureUrl="https://cdn.discordapp.com/attachments/857608852374945793/1161658445796233308/thumbnail_void_scale_up.jpg"
-            />
+            {eventsQuery.data?.records?.map((event) => {
+              return (
+                <EventCard
+                  key={event.id}
+                  description={event.description}
+                  title={event.title}
+                  displayName={event.creator.displayName as string}
+                  username={event.creator.mlbbUsername as string}
+                  playersJoined={event._count.EventRegistration}
+                  totalMatches={event.totalMatches}
+                  profilePictureUrl={event.creator.profilePictureUrl || ''}
+                />
+              );
+            })}
           </div>
         </section>
       </main>
