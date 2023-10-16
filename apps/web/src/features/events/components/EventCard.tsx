@@ -1,5 +1,6 @@
+import Link from 'next/link';
+
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
-import { Button } from '~/components/ui/button';
 
 interface EventCardProps {
   title: string;
@@ -9,45 +10,42 @@ interface EventCardProps {
   profilePictureUrl: string;
   playersJoined: number;
   totalMatches: number;
+  id: number;
 }
 
 export const EventCard: React.FC<EventCardProps> = ({
-  description,
   displayName,
   playersJoined,
   profilePictureUrl,
   title,
   totalMatches,
   username,
+  id,
 }) => {
   return (
-    <div className="flex flex-col gap-3 md:rounded md:border md:p-4">
-      <div className="col-span-2 flex items-center gap-4">
-        <Avatar className="h-14 w-14 sm:h-20 sm:w-20">
+    <Link
+      href={`/events/${id}`}
+      className="flex gap-3 md:rounded md:border md:p-4"
+    >
+      <div className="col-span-2 flex max-w-[6rem] flex-col justify-center gap-2">
+        <Avatar className="h-24 w-24 rounded-md">
           <AvatarFallback>{displayName.charAt(0)}</AvatarFallback>
           <AvatarImage src={profilePictureUrl} />
         </Avatar>
-        <div className="flex flex-col">
-          <p className="font-semibold">{displayName}</p>
-          <p className="text-sm text-muted-foreground">{username}</p>
-        </div>
+        <p className="text-center text-xs">
+          {displayName} {username}
+        </p>
       </div>
 
-      <div className="col-span-5 flex flex-col gap-1">
-        <p className="text-xl font-semibold">{title}</p>
-        <p className="text-sm text-muted-foreground">{description}</p>
-        <div className="mt-4 grid grid-cols-2 rounded border py-2">
-          <div className="flex flex-col items-center border-r">
-            <p className="text-2xl">{playersJoined}</p>
-            <p className="text-sm text-muted-foreground">Players Joined</p>
-          </div>
-          <div className="flex flex-col items-center">
-            <p className="text-2xl">{totalMatches}</p>
-            <p className="text-sm text-muted-foreground">Total Match</p>
-          </div>
+      <div className="col-span-5 flex flex-1 flex-col gap-1">
+        <p className="text-md line-clamp-3 font-semibold md:text-xl">
+          {title} Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+        </p>
+        <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">
+          <p>{totalMatches} Total matches</p>
+          <p>{playersJoined} Players joined</p>
         </div>
-        <Button className="mt-2">Daftar event</Button>
       </div>
-    </div>
+    </Link>
   );
 };

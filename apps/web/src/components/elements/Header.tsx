@@ -39,7 +39,7 @@ export const Header = () => {
 
   return (
     <>
-      <div className="mb-10 flex p-6 lg:mb-20 lg:grid lg:grid-cols-3 lg:justify-center">
+      <div className="mb-10 flex p-6 lg:grid lg:grid-cols-3 lg:justify-center">
         <div className="col-start-2 hidden justify-center lg:flex">
           <NavigationMenu>
             <NavigationMenuList>
