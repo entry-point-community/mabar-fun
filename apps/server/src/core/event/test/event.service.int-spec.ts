@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PrismaService } from '~/lib/prisma.service';
@@ -47,6 +48,25 @@ describe('EventService', () => {
 
         expect(records.length).toBe(3);
         expect(count).toBe(3);
+      });
+    });
+  });
+
+  describe('getEventById', () => {
+    describe('when given a valid ID', () => {
+      it('should return an event', async () => {
+        const event = await eventService.getEventById(1);
+
+        expect(event).toBeDefined();
+        expect(event?.id).toBe(1);
+      });
+    });
+
+    describe('when given an ID which does not exist', () => {
+      it('should throw a not found exception', async () => {
+        await expect(eventService.getEventById(100)).rejects.toThrow(
+          NotFoundException,
+        );
       });
     });
   });

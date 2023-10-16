@@ -38,9 +38,7 @@ export const EventCard: React.FC<EventCardProps> = ({
       </div>
 
       <div className="col-span-5 flex flex-1 flex-col gap-1">
-        <p className="text-md line-clamp-3 font-semibold md:text-xl">
-          {title} Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
-        </p>
+        <p className="text-md line-clamp-3 font-semibold md:text-xl">{title}</p>
         <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">
           <p>{totalMatches} Total matches</p>
           <p>{playersJoined} Players joined</p>

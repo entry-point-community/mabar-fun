@@ -1,4 +1,4 @@
-import { Get, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { GetEventsDTO } from '@v6/dto';
 
@@ -8,7 +8,6 @@ import { PrismaService } from '~/lib/prisma.service';
 export class EventService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  @Get()
   public async getEvents(getEventsDTO: GetEventsDTO) {
     const { limit = 10, page = 1 } = getEventsDTO;
 
@@ -35,5 +34,34 @@ export class EventService {
     ]);
 
     return { records, count };
+  }
+
+  public async getEventById(eventId: number) {
+    const event = await this.prismaService.event.findUnique({
+      where: {
+        id: eventId,
+      },
+      include: {
+        creator: true,
+        EventRegistration: {
+          include: {
+            player: true,
+          },
+        },
+        EventTeam: {
+          include: {
+            EventTeamPlayer: {
+              include: {
+                player: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!event) throw new NotFoundException('event not found');
+
+    return event;
   }
 }

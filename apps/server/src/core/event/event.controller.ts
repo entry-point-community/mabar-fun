@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { GetEventsDTO } from '@v6/dto';
 
 import { PaginationService } from '../pagination/pagination.service';
@@ -18,5 +18,12 @@ export class EventController {
     return await this.paginationService.buildPaginationResponse(records, {
       count,
     });
+  }
+
+  @Get('/:eventId')
+  public async getEventById(@Param('eventId') eventId: number) {
+    const event = await this.eventService.getEventById(eventId);
+
+    return event;
   }
 }
