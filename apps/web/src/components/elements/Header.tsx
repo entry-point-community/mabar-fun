@@ -93,7 +93,11 @@ export const Header = () => {
           )}
         </div>
 
-        <Button onClick={toggleSheetOpen} className="self-start lg:hidden">
+        <Button
+          onClick={toggleSheetOpen}
+          className="self-start lg:hidden"
+          variant="secondary"
+        >
           <HamburgerMenuIcon />
         </Button>
         <SheetMenu

@@ -29,7 +29,9 @@ export const EventCard: React.FC<EventCardProps> = ({
     >
       <div className="col-span-2 flex max-w-[6rem] flex-col justify-center gap-2">
         <Avatar className="h-24 w-24 rounded-md">
-          <AvatarFallback>{displayName.charAt(0)}</AvatarFallback>
+          <AvatarFallback className="rounded-md">
+            {displayName.charAt(0)}
+          </AvatarFallback>
           <AvatarImage src={profilePictureUrl} />
         </Avatar>
         <p className="text-center text-xs">
