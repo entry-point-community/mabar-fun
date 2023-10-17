@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ExternalLinkIcon } from '@radix-ui/react-icons';
 import { getEventById } from '@v6/api';
 import { Prisma } from '@v6/db';
-import { format } from 'date-fns';
+import { format, isPast } from 'date-fns';
 import { IoCalendar, IoCloseCircle, IoPerson } from 'react-icons/io5';
 
 import { HeadMetaData } from '~/components/meta/HeadMetaData';
@@ -56,6 +56,8 @@ const EventDetail: React.FC<EventDetailProps> = ({
 }) => {
   const [sheetOpened, setSheetOpened] = useState<boolean>(false);
   const [dialogOpened, setDialogOpened] = useState<boolean>(false);
+
+  const isPastEndRegistrationDate = isPast(new Date(endRegistrationDate));
 
   return (
     <>
@@ -120,6 +122,7 @@ const EventDetail: React.FC<EventDetailProps> = ({
           )}
 
           <Button
+            disabled={isPastEndRegistrationDate}
             onClick={() => setSheetOpened(true)}
             className="mt-2 w-full self-start md:hidden"
           >
@@ -127,6 +130,7 @@ const EventDetail: React.FC<EventDetailProps> = ({
           </Button>
 
           <Button
+            disabled={isPastEndRegistrationDate}
             onClick={() => setDialogOpened(true)}
             className="mt-2 hidden self-start md:inline-block"
           >
