@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import { GetServerSideProps } from 'next';
+import Link from 'next/link';
+import { ExternalLinkIcon } from '@radix-ui/react-icons';
 import { getEventById } from '@v6/api';
-import { MlbbRole, Prisma } from '@v6/db';
+import { Prisma } from '@v6/db';
 import { format } from 'date-fns';
-import {
-  IoCalendar,
-  IoCloseCircle,
-  IoLocation,
-  IoPerson,
-} from 'react-icons/io5';
+import { IoCalendar, IoCloseCircle, IoPerson } from 'react-icons/io5';
 
-import { mlbbRoleEnumToText } from '~/utils/role';
 import { HeadMetaData } from '~/components/meta/HeadMetaData';
 import { AspectRatio } from '~/components/ui/aspect-ratio';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
@@ -21,21 +17,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '~/components/ui/dialog';
-import { Input } from '~/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '~/components/ui/select';
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from '~/components/ui/sheet';
-import { RegisterEventForm } from '~/features/events/event-details/components';
+import {
+  PlayersList,
+  RegisterEventForm,
+} from '~/features/events/event-details/components';
 import { axios } from '~/lib/axios';
 
 interface EventDetailProps {
@@ -63,7 +54,6 @@ const EventDetail: React.FC<EventDetailProps> = ({
   livestreamUrl,
   maxPlayers,
 }) => {
-  console.log(startRegistrationDate);
   const [sheetOpened, setSheetOpened] = useState<boolean>(false);
   const [dialogOpened, setDialogOpened] = useState<boolean>(false);
 
@@ -105,12 +95,21 @@ const EventDetail: React.FC<EventDetailProps> = ({
             </div>
             <div className="flex items-center gap-2">
               <IoPerson />{' '}
-              <span>{!maxPlayers ? 'Unlimited' : maxPlayers} slots</span>
+              <span>
+                {!maxPlayers ? 'Unlimited' : maxPlayers} players quota
+              </span>
             </div>
             {!!livestreamUrl && (
-              <div className="flex items-center gap-2">
-                <IoLocation /> <span>{livestreamUrl}</span>
-              </div>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="mt-1 flex w-fit items-center"
+                asChild
+              >
+                <Link href={livestreamUrl} target="_blank">
+                  Watch Live <ExternalLinkIcon className="ml-2 h-3.5 w-3.5" />
+                </Link>
+              </Button>
             )}
           </div>
 
@@ -134,42 +133,7 @@ const EventDetail: React.FC<EventDetailProps> = ({
             Join event
           </Button>
 
-          <div className="mt-3 flex flex-col gap-2">
-            <h3 className="text-lg font-semibold">
-              Players terdaftar ({registeredPlayers.length})
-            </h3>
-
-            <div className="grid grid-cols-2 gap-2">
-              <Input className="mb-2" placeholder="Cari nickname player" />
-
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Cari role" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.values(MlbbRole).map((role) => (
-                    <SelectItem key={role} value={role}>
-                      {mlbbRoleEnumToText(role)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {registeredPlayers.map((registeredPlayer) => {
-                return (
-                  <div
-                    className="col-span-full flex justify-between rounded-md bg-secondary px-3 py-1.5 text-sm md:col-span-1"
-                    key={registeredPlayer.profileUserId}
-                  >
-                    <p>{registeredPlayer.player.mlbbUsername}</p>
-                    <p className="text-muted-foreground">
-                      {mlbbRoleEnumToText(registeredPlayer.role)}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <PlayersList registeredPlayers={registeredPlayers} />
         </section>
 
         <Sheet open={sheetOpened} onOpenChange={setSheetOpened}>

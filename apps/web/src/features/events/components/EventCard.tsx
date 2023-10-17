@@ -10,6 +10,7 @@ interface EventCardProps {
   profilePictureUrl: string;
   playersJoined: number;
   totalMatches: number;
+  maxPlayers: number | null;
   id: number;
 }
 
@@ -18,8 +19,8 @@ export const EventCard: React.FC<EventCardProps> = ({
   playersJoined,
   profilePictureUrl,
   title,
-  totalMatches,
   username,
+  maxPlayers,
   id,
 }) => {
   return (
@@ -42,8 +43,10 @@ export const EventCard: React.FC<EventCardProps> = ({
       <div className="col-span-5 flex flex-1 flex-col gap-1">
         <p className="text-md line-clamp-3 font-semibold md:text-xl">{title}</p>
         <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">
-          <p>{totalMatches} Total matches</p>
-          <p>{playersJoined} Players joined</p>
+          <p>{playersJoined} players joined</p>
+        </div>
+        <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">
+          <p>{maxPlayers ? maxPlayers : 'Unlimited'} players quota</p>
         </div>
       </div>
     </Link>

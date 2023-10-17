@@ -42,6 +42,7 @@ const EventsPage = () => {
                   playersJoined={event._count.EventRegistration}
                   totalMatches={event.totalMatches}
                   profilePictureUrl={event.creator.profilePictureUrl || ''}
+                  maxPlayers={event.maxPlayers}
                   id={event.id}
                 />
               );
