@@ -1,4 +1,4 @@
-import { MlbbRole } from '@v6/db';
+import { EventRegistration, MlbbRole } from '@v6/db';
 
 import { mlbbRoleEnumToText } from '~/utils/role';
 import { Button } from '~/components/ui/button';
@@ -10,7 +10,17 @@ import {
   SelectValue,
 } from '~/components/ui/select';
 
-export const RegisterEventForm = () => {
+interface RegisterEventFormProps {
+  playerRoles: Pick<EventRegistration, 'role'>[];
+}
+
+export const RegisterEventForm: React.FC<RegisterEventFormProps> = ({
+  playerRoles = [],
+}) => {
+  const calculateRoleCount = (role: MlbbRole) => {
+    return playerRoles.filter((player) => player.role === role).length;
+  };
+
   return (
     <div className="flex flex-col gap-4 py-4">
       <div className="grid grid-cols-2 gap-4 rounded-md border p-4 text-sm">
@@ -18,11 +28,11 @@ export const RegisterEventForm = () => {
           Player count
         </p>
 
-        <p>Exp Laner: 3</p>
-        <p>Jungler: 3</p>
-        <p>Mid Laner: 3</p>
-        <p>Roamer: 3</p>
-        <p>Gold Laner: 3</p>
+        <p>Exp Laner: {calculateRoleCount(MlbbRole.EXP)}</p>
+        <p>Jungler: {calculateRoleCount(MlbbRole.JUNGLE)}</p>
+        <p>Mid Laner: {calculateRoleCount(MlbbRole.MID)}</p>
+        <p>Roamer: {calculateRoleCount(MlbbRole.ROAM)}</p>
+        <p>Gold Laner: {calculateRoleCount(MlbbRole.GOLD)}</p>
       </div>
       <Select>
         <SelectTrigger>

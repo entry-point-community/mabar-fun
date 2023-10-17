@@ -55,6 +55,7 @@ model Event {
   status                EventStatus
   totalMatches          Int                 @default(1)
   livestreamUrl         String?
+  maxPlayers            Int?                @default(0)
 }
 
 model EventRegistration {
