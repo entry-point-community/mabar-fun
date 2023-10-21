@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { GetEventsDTO } from '@v6/dto';
+import { GetEventsDTO, RegisterEventDTO } from '@v6/dto';
 
 import { PrismaService } from '~/lib/prisma.service';
 
@@ -63,5 +67,44 @@ export class EventService {
     if (!event) throw new NotFoundException('event not found');
 
     return event;
+  }
+
+  public async registerToEvent(
+    userId: string,
+    { mlbbRole, eventId }: RegisterEventDTO & { eventId: number },
+  ) {
+    const [findUserRegisteredToEvent, event] = await Promise.all([
+      this.prismaService.eventRegistration.findUnique({
+        where: {
+          eventId_profileUserId: {
+            eventId,
+            profileUserId: userId,
+          },
+        },
+      }),
+      this.prismaService.event.findUnique({
+        where: {
+          id: eventId,
+        },
+      }),
+    ]);
+
+    if (!event) {
+      throw new NotFoundException('event not found');
+    }
+
+    if (findUserRegisteredToEvent) {
+      throw new UnprocessableEntityException(
+        'user has already been registered to the event',
+      );
+    }
+
+    return await this.prismaService.eventRegistration.create({
+      data: {
+        role: mlbbRole,
+        eventId,
+        profileUserId: userId,
+      },
+    });
   }
 }

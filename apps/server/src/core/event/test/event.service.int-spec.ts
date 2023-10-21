@@ -1,5 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { MlbbRole } from '@prisma/client';
 
 import { PrismaService } from '~/lib/prisma.service';
 import { EventService } from '../event.service';
@@ -67,6 +68,55 @@ describe('EventService', () => {
         await expect(eventService.getEventById(100)).rejects.toThrow(
           NotFoundException,
         );
+      });
+    });
+  });
+
+  describe('registerToEvent', () => {
+    describe('when given a valid event ID and user has not been registered to the event yet', () => {
+      it('should successfully register the user', async () => {
+        const eventRegistration = await eventService.registerToEvent(
+          profileSeeder.userId,
+          {
+            eventId: 1,
+            mlbbRole: MlbbRole.JUNGLE,
+          },
+        );
+
+        expect(eventRegistration).toMatchObject({
+          profileUserId: profileSeeder.userId,
+          eventId: 1,
+        });
+      });
+    });
+
+    describe('when given a valid event ID but user has been registered to the event', () => {
+      it('should successfully register the user', async () => {
+        const eventRegistration = eventService.registerToEvent(
+          profileSeeder.userId,
+          {
+            eventId: 1,
+            mlbbRole: MlbbRole.GOLD,
+          },
+        );
+
+        await expect(eventRegistration).rejects.toThrow(
+          'user has already been registered to the event',
+        );
+      });
+    });
+
+    describe('when given an event ID that does not exist', () => {
+      it('should throw a not found exception', async () => {
+        const eventRegistration = eventService.registerToEvent(
+          profileSeeder.userId,
+          {
+            eventId: 100,
+            mlbbRole: MlbbRole.JUNGLE,
+          },
+        );
+
+        await expect(eventRegistration).rejects.toThrow('event not found');
       });
     });
   });

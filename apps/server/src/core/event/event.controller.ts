@@ -1,6 +1,8 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { GetEventsDTO } from '@v6/dto';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { GetEventsDTO, RegisterEventDTO } from '@v6/dto';
 
+import { AuthUser } from '../auth/types';
+import { User } from '../auth/user.decorator';
 import { PaginationService } from '../pagination/pagination.service';
 import { EventService } from './event.service';
 
@@ -25,5 +27,22 @@ export class EventController {
     const event = await this.eventService.getEventById(eventId);
 
     return event;
+  }
+
+  @Post('/:eventId/event-registrations')
+  public async registerUserToEvent(
+    @Param('eventId') eventId: number,
+    @User() user: AuthUser,
+    @Body() registerEventDTO: RegisterEventDTO,
+  ) {
+    const eventRegistration = await this.eventService.registerToEvent(
+      user.sub,
+      {
+        eventId,
+        mlbbRole: registerEventDTO.mlbbRole,
+      },
+    );
+
+    return eventRegistration;
   }
 }
