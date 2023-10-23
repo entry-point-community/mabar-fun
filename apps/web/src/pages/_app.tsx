@@ -5,15 +5,14 @@ import type { AppProps } from 'next/app';
 import { Inter, Poppins } from 'next/font/google';
 import Head from 'next/head';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
-import { createClient } from '@supabase/supabase-js';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ApiClientProvider } from '@v6/api';
+import { supabaseClient as supabase } from '@v6/supabase/nextjs';
 import { Toaster } from 'sonner';
 
 import { Footer } from '~/components/elements/Footer';
 import { Header } from '~/components/elements/Header';
 import { ThemeProvider } from '~/components/providers/theme-provider';
-import { env } from '~/env.mjs';
 import { AxiosManager } from '~/lib/axios';
 import { queryClient } from '~/lib/react-query';
 import { useStore } from '~/store';
@@ -34,13 +33,7 @@ const axiosManager = new AxiosManager();
 export default function App({ Component, pageProps }: AppProps) {
   const { onAuthSuccess, onLogout } = useStore();
 
-  const [supabaseClient] = useState(() =>
-    createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_KEY, {
-      auth: {
-        storageKey: 'sb-auth',
-      },
-    }),
-  );
+  const [supabaseClient] = useState(() => supabase);
 
   useEffect(() => {
     supabaseClient.auth.getSession().then(({ data: { session } }) => {

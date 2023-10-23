@@ -1,0 +1,21 @@
+{
+  "name": "@v6/supabase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "author": "theodevoid",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.33.2",
+    "@t3-oss/env-core": "^0.7.0",
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.3"
+  }
+}

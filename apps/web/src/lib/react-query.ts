@@ -14,12 +14,16 @@ export const queryClient = new QueryClient({
   defaultOptions: queryConfig,
   queryCache: new QueryCache({
     onError: (error) => {
-      const err = error as AxiosError;
+      if (error instanceof AxiosError) {
+        const err = error as AxiosError;
 
-      if (err.response!.status >= 500) {
-        toast.error('Server error');
-        return;
+        if (err.response && err.response.status >= 500) {
+          toast.error('Server error');
+          return;
+        }
       }
+
+      toast.error('Something went wrong');
     },
   }),
 });

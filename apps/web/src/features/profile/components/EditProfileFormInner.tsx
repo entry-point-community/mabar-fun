@@ -204,7 +204,7 @@ export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a verified email to display" />
+                      <SelectValue placeholder="Select your mobile legends role" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>

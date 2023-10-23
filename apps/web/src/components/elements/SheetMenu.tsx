@@ -35,7 +35,7 @@ export const SheetMenu: React.FC<SheetMenuProps> = ({ open, onOpenChange }) => {
             <div className="flex flex-1 flex-col gap-8">
               <div className="flex flex-col gap-2">
                 <p className="mb-2 font-semibold">Gas Mabar</p>
-                <Link className="text-muted-foreground" href="/">
+                <Link className="text-muted-foreground" href="/events">
                   Event Mabar{' '}
                   <Badge className="ml-2" variant="secondary">
                     🔴 Live
