@@ -40,6 +40,7 @@
     "dotenv-flow": "^3.2.0",
     "env-var": "^7.4.0",
     "helmet": "^7.0.0",
+    "mockdate": "^3.0.5",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",

@@ -93,6 +93,20 @@ export class EventService {
       throw new NotFoundException('event not found');
     }
 
+    if (event.profileUserId === userId) {
+      throw new UnprocessableEntityException('unable to join owned event');
+    }
+
+    const now = new Date();
+
+    if (now < event.startRegistrationDate) {
+      throw new UnprocessableEntityException('registration is not opened yet');
+    }
+
+    if (now > event.endRegistrationDate) {
+      throw new UnprocessableEntityException('registration window has passed');
+    }
+
     if (findUserRegisteredToEvent) {
       throw new UnprocessableEntityException(
         'user has already been registered to the event',

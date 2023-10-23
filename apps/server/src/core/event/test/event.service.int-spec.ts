@@ -1,7 +1,10 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MlbbRole } from '@prisma/client';
+import { subDays } from 'date-fns';
+import * as Mockdate from 'mockdate';
 
+import { authSeeder } from '~/core/auth/test/fixtures';
 import { PrismaService } from '~/lib/prisma.service';
 import { EventService } from '../event.service';
 import { eventsSeeders, profileSeeder } from './fixtures';
@@ -18,8 +21,8 @@ describe('EventService', () => {
     eventService = module.get<EventService>(EventService);
     prismaService = module.get<PrismaService>(PrismaService);
 
-    await prismaService.profile.create({
-      data: profileSeeder,
+    await prismaService.profile.createMany({
+      data: [profileSeeder, authSeeder],
     });
 
     await prismaService.event.createMany({
@@ -76,7 +79,7 @@ describe('EventService', () => {
     describe('when given a valid event ID and user has not been registered to the event yet', () => {
       it('should successfully register the user', async () => {
         const eventRegistration = await eventService.registerToEvent(
-          profileSeeder.userId,
+          authSeeder.userId,
           {
             eventId: 1,
             mlbbRole: MlbbRole.JUNGLE,
@@ -84,7 +87,7 @@ describe('EventService', () => {
         );
 
         expect(eventRegistration).toMatchObject({
-          profileUserId: profileSeeder.userId,
+          profileUserId: authSeeder.userId,
           eventId: 1,
         });
       });
@@ -93,7 +96,7 @@ describe('EventService', () => {
     describe('when given a valid event ID but user has been registered to the event', () => {
       it('should successfully register the user', async () => {
         const eventRegistration = eventService.registerToEvent(
-          profileSeeder.userId,
+          authSeeder.userId,
           {
             eventId: 1,
             mlbbRole: MlbbRole.GOLD,
@@ -117,6 +120,26 @@ describe('EventService', () => {
         );
 
         await expect(eventRegistration).rejects.toThrow('event not found');
+      });
+    });
+
+    describe('when attempting to register before registration date', () => {
+      it('should throw an unprocessable entity exception', async () => {
+        Mockdate.set(subDays(new Date(), 1));
+
+        const eventRegistration = eventService.registerToEvent(
+          authSeeder.userId,
+          {
+            eventId: 2,
+            mlbbRole: MlbbRole.JUNGLE,
+          },
+        );
+
+        await expect(eventRegistration).rejects.toThrow(
+          'registration is not opened yet',
+        );
+
+        Mockdate.reset();
       });
     });
   });

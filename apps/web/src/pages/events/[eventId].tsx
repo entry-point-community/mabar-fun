@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { ExternalLinkIcon } from '@radix-ui/react-icons';
-import { getEventById } from '@v6/api';
+import { useUser } from '@supabase/auth-helpers-react';
+import { getEventById, useRegisterEventMutation } from '@v6/api';
 import { Prisma } from '@v6/db';
-import { format, isPast } from 'date-fns';
+import { RegisterEventDTO } from '@v6/dto';
+import { format, isFuture, isPast } from 'date-fns';
 import { IoCalendar, IoCloseCircle, IoPerson } from 'react-icons/io5';
+import { toast } from 'sonner';
 
 import { HeadMetaData } from '~/components/meta/HeadMetaData';
 import { AspectRatio } from '~/components/ui/aspect-ratio';
@@ -41,6 +44,8 @@ interface EventDetailProps {
   endRegistrationDate: Date;
   livestreamUrl: string | null;
   maxPlayers: number | null;
+  profileUserId: string;
+  id: number;
 }
 
 const EventDetail: React.FC<EventDetailProps> = ({
@@ -53,11 +58,43 @@ const EventDetail: React.FC<EventDetailProps> = ({
   endRegistrationDate,
   livestreamUrl,
   maxPlayers,
+  profileUserId,
+  id,
 }) => {
+  const user = useUser();
+
   const [sheetOpened, setSheetOpened] = useState<boolean>(false);
   const [dialogOpened, setDialogOpened] = useState<boolean>(false);
 
+  const { mutate } = useRegisterEventMutation({
+    onSuccess: () => {
+      toast.success('Berhasil daftar event');
+      window.location.reload();
+    },
+  });
+
+  const handleRegisterEvent = ({ mlbbRole }: RegisterEventDTO) => {
+    mutate({
+      mlbbRole,
+      eventId: id,
+    });
+  };
+
   const isPastEndRegistrationDate = isPast(new Date(endRegistrationDate));
+  const isOwner = user?.id === profileUserId;
+  const isBeforeStartRegistrationDate = isFuture(
+    new Date(startRegistrationDate),
+  );
+  const isRegistered = registeredPlayers.some(
+    (player) => player.profileUserId === user?.id,
+  );
+
+  const buttonIsDisabled =
+    isPastEndRegistrationDate ||
+    isOwner ||
+    isBeforeStartRegistrationDate ||
+    isRegistered ||
+    !user;
 
   return (
     <>
@@ -122,7 +159,7 @@ const EventDetail: React.FC<EventDetailProps> = ({
           )}
 
           <Button
-            disabled={isPastEndRegistrationDate}
+            disabled={buttonIsDisabled}
             onClick={() => setSheetOpened(true)}
             className="mt-2 w-full self-start md:hidden"
           >
@@ -130,7 +167,7 @@ const EventDetail: React.FC<EventDetailProps> = ({
           </Button>
 
           <Button
-            disabled={isPastEndRegistrationDate}
+            disabled={buttonIsDisabled}
             onClick={() => setDialogOpened(true)}
             className="mt-2 hidden self-start md:inline-block"
           >
@@ -145,7 +182,10 @@ const EventDetail: React.FC<EventDetailProps> = ({
             <SheetHeader className="text-left">
               <SheetTitle>Daftar event</SheetTitle>
             </SheetHeader>
-            <RegisterEventForm playerRoles={registeredPlayers} />
+            <RegisterEventForm
+              onRegister={handleRegisterEvent}
+              playerRoles={registeredPlayers}
+            />
           </SheetContent>
         </Sheet>
 
@@ -154,7 +194,10 @@ const EventDetail: React.FC<EventDetailProps> = ({
             <DialogHeader>
               <DialogTitle>Daftar event</DialogTitle>
             </DialogHeader>
-            <RegisterEventForm playerRoles={registeredPlayers} />
+            <RegisterEventForm
+              onRegister={handleRegisterEvent}
+              playerRoles={registeredPlayers}
+            />
           </DialogContent>
         </Dialog>
       </main>
@@ -185,7 +228,11 @@ export const getServerSideProps: GetServerSideProps<
     title,
     EventRegistration,
     maxPlayers,
+    profileUserId,
+    id,
   } = event;
+
+  // TODO: Refactor registered player data fetching, should be separate from event detail
 
   return {
     props: {
@@ -199,6 +246,8 @@ export const getServerSideProps: GetServerSideProps<
       endRegistrationDate,
       livestreamUrl,
       maxPlayers,
+      profileUserId,
+      id,
     },
   };
 };

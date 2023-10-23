@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { EventRegistration, MlbbRole } from '@v6/db';
+import { RegisterEventDTO } from '@v6/dto';
 
 import { mlbbRoleEnumToText } from '~/utils/role';
 import { Button } from '~/components/ui/button';
@@ -12,13 +14,25 @@ import {
 
 interface RegisterEventFormProps {
   playerRoles: Pick<EventRegistration, 'role'>[];
+  onRegister: (params: RegisterEventDTO) => void;
 }
 
 export const RegisterEventForm: React.FC<RegisterEventFormProps> = ({
   playerRoles = [],
+  onRegister,
 }) => {
+  const [selectedRole, setSelectedRole] = useState<MlbbRole | null>(null);
+
   const calculateRoleCount = (role: MlbbRole) => {
     return playerRoles.filter((player) => player.role === role).length;
+  };
+
+  const handleRegisterEvent = () => {
+    if (selectedRole) {
+      onRegister({
+        mlbbRole: selectedRole,
+      });
+    }
   };
 
   return (
@@ -34,7 +48,7 @@ export const RegisterEventForm: React.FC<RegisterEventFormProps> = ({
         <p>Roamer: {calculateRoleCount(MlbbRole.ROAM)}</p>
         <p>Gold Laner: {calculateRoleCount(MlbbRole.GOLD)}</p>
       </div>
-      <Select>
+      <Select onValueChange={(value) => setSelectedRole(value as MlbbRole)}>
         <SelectTrigger>
           <SelectValue placeholder="Pilih role" />
         </SelectTrigger>
@@ -47,7 +61,9 @@ export const RegisterEventForm: React.FC<RegisterEventFormProps> = ({
         </SelectContent>
       </Select>
 
-      <Button>Daftarkan diri</Button>
+      <Button disabled={!selectedRole} onClick={handleRegisterEvent}>
+        Daftarkan diri
+      </Button>
     </div>
   );
 };

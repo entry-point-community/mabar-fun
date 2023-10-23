@@ -1,6 +1,15 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { GetEventsDTO, RegisterEventDTO } from '@v6/dto';
 
+import { SupabaseGuard } from '../auth/supabase/supabase.guard';
 import { AuthUser } from '../auth/types';
 import { User } from '../auth/user.decorator';
 import { PaginationService } from '../pagination/pagination.service';
@@ -30,6 +39,7 @@ export class EventController {
   }
 
   @Post('/:eventId/event-registrations')
+  @UseGuards(SupabaseGuard)
   public async registerUserToEvent(
     @Param('eventId') eventId: number,
     @User() user: AuthUser,
