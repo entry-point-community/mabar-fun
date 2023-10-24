@@ -7,7 +7,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { GetEventsDTO, RegisterEventDTO } from '@v6/dto';
+import { CreateEventDTO, GetEventsDTO, RegisterEventDTO } from '@v6/dto';
 
 import { SupabaseGuard } from '../auth/supabase/supabase.guard';
 import { AuthUser } from '../auth/types';
@@ -54,5 +54,16 @@ export class EventController {
     );
 
     return eventRegistration;
+  }
+
+  @Post()
+  @UseGuards(SupabaseGuard)
+  public async createEvent(
+    @Body() createEventDTO: CreateEventDTO,
+    @User() user: AuthUser,
+  ) {
+    const event = await this.eventService.createEvent(createEventDTO, user.sub);
+
+    return event;
   }
 }

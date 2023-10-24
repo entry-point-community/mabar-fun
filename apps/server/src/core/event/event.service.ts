@@ -1,10 +1,11 @@
 import {
   Injectable,
   NotFoundException,
+  UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { GetEventsDTO, RegisterEventDTO } from '@v6/dto';
+import { CreateEventDTO, GetEventsDTO, RegisterEventDTO } from '@v6/dto';
 
 import { PrismaService } from '~/lib/prisma.service';
 
@@ -120,5 +121,39 @@ export class EventService {
         profileUserId: userId,
       },
     });
+  }
+
+  public async createEvent(createEventDTO: CreateEventDTO, userId: string) {
+    const { endRegistrationDate, startRegistrationDate } = createEventDTO;
+
+    if (endRegistrationDate < startRegistrationDate) {
+      throw new UnprocessableEntityException(
+        "end registration date shouldn't be before start registration date",
+      );
+    }
+
+    // REFACTOR THIS TO ANOTHER SERVICE
+    const user = await this.prismaService.profile.findUnique({
+      where: {
+        userId,
+      },
+    });
+
+    if (!user?.isCreator) {
+      throw new UnauthorizedException('user is not a creator');
+    }
+
+    const event = await this.prismaService.event.create({
+      data: {
+        ...createEventDTO,
+        creator: {
+          connect: {
+            userId,
+          },
+        },
+      },
+    });
+
+    return event;
   }
 }

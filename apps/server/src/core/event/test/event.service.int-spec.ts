@@ -1,10 +1,10 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MlbbRole } from '@prisma/client';
-import { subDays } from 'date-fns';
+import { addMonths, subDays, subMonths } from 'date-fns';
 import * as Mockdate from 'mockdate';
 
-import { authSeeder } from '~/core/auth/test/fixtures';
+import { creatorSeeder, userSeeder } from '~/core/auth/test/fixtures';
 import { PrismaService } from '~/lib/prisma.service';
 import { EventService } from '../event.service';
 import { eventsSeeders, profileSeeder } from './fixtures';
@@ -22,7 +22,7 @@ describe('EventService', () => {
     prismaService = module.get<PrismaService>(PrismaService);
 
     await prismaService.profile.createMany({
-      data: [profileSeeder, authSeeder],
+      data: [profileSeeder, userSeeder, creatorSeeder],
     });
 
     await prismaService.event.createMany({
@@ -79,7 +79,7 @@ describe('EventService', () => {
     describe('when given a valid event ID and user has not been registered to the event yet', () => {
       it('should successfully register the user', async () => {
         const eventRegistration = await eventService.registerToEvent(
-          authSeeder.userId,
+          userSeeder.userId,
           {
             eventId: 1,
             mlbbRole: MlbbRole.JUNGLE,
@@ -87,7 +87,7 @@ describe('EventService', () => {
         );
 
         expect(eventRegistration).toMatchObject({
-          profileUserId: authSeeder.userId,
+          profileUserId: userSeeder.userId,
           eventId: 1,
         });
       });
@@ -96,7 +96,7 @@ describe('EventService', () => {
     describe('when given a valid event ID but user has been registered to the event', () => {
       it('should successfully register the user', async () => {
         const eventRegistration = eventService.registerToEvent(
-          authSeeder.userId,
+          userSeeder.userId,
           {
             eventId: 1,
             mlbbRole: MlbbRole.GOLD,
@@ -128,7 +128,7 @@ describe('EventService', () => {
         Mockdate.set(subDays(new Date(), 1));
 
         const eventRegistration = eventService.registerToEvent(
-          authSeeder.userId,
+          userSeeder.userId,
           {
             eventId: 2,
             mlbbRole: MlbbRole.JUNGLE,
@@ -140,6 +140,62 @@ describe('EventService', () => {
         );
 
         Mockdate.reset();
+      });
+    });
+  });
+
+  describe('createEvent', () => {
+    it('should create an event', async () => {
+      const event = await eventService.createEvent(
+        {
+          title: 'Test event 1',
+          description: 'Description 1',
+          startRegistrationDate: new Date(),
+          endRegistrationDate: addMonths(new Date(), 1),
+          maxPlayers: 50,
+        },
+        creatorSeeder.userId,
+      );
+
+      expect(event).toMatchObject({
+        title: 'Test event 1',
+        description: 'Description 1',
+      });
+    });
+
+    describe('when end registration date is before start registration date', () => {
+      it('should throw an unprocessable entity exception', async () => {
+        const event = eventService.createEvent(
+          {
+            title: 'Test event 1',
+            description: 'Description 1',
+            startRegistrationDate: new Date(),
+            endRegistrationDate: subMonths(new Date(), 1),
+            maxPlayers: 50,
+          },
+          creatorSeeder.userId,
+        );
+
+        await expect(event).rejects.toThrow(
+          "end registration date shouldn't be before start registration date",
+        );
+      });
+    });
+
+    describe('when user is not a creator', () => {
+      it('should throw an unauthorized exception', async () => {
+        const event = eventService.createEvent(
+          {
+            title: 'Test event 1',
+            description: 'Description 1',
+            startRegistrationDate: new Date(),
+            endRegistrationDate: addMonths(new Date(), 1),
+            maxPlayers: 50,
+          },
+          userSeeder.userId,
+        );
+
+        await expect(event).rejects.toThrow('user is not a creator');
       });
     });
   });
