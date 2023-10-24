@@ -13,7 +13,6 @@ const UserProfileCard = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Button
-        size="icon"
         variant="ghost"
         className={cn(`justify-start rounded p-1`, className)}
         {...props}
