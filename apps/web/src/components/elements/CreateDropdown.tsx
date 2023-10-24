@@ -18,15 +18,15 @@ export const CreateDropdown = () => {
           <PlusIcon className="h-6 w-6" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
+      <DropdownMenuContent align="end" className="w-44">
         <DropdownMenuItem asChild>
-          <Link className="flex justify-between" href="/event/create">
-            Adain event
+          <Link className="flex justify-between" href="/events/create">
+            Schedule event
             <IoCalendar />
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="flex justify-between" disabled>
-          Bikin guide
+          Tulis guide
           <IoBook />
         </DropdownMenuItem>
       </DropdownMenuContent>

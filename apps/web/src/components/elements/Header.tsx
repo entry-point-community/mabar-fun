@@ -53,7 +53,7 @@ export const Header = () => {
 
         <Button
           onClick={toggleSheetOpen}
-          className="self-start rounded-full lg:hidden"
+          className="rounded-full lg:hidden"
           variant="ghost"
           size="icon"
         >
