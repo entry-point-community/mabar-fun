@@ -431,6 +431,9 @@ importers:
       class-validator:
         specifier: ^0.14.0
         version: 0.14.0
+      date-fns:
+        specifier: ^2.30.0
+        version: 2.30.0
     devDependencies:
       typescript:
         specifier: 5.1.3

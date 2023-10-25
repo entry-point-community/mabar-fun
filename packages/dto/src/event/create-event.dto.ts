@@ -1,15 +1,18 @@
 import { Transform } from 'class-transformer';
 import {
-  IsDate,
+  IsDateString,
   IsNumber,
   IsOptional,
   IsString,
   Max,
   MaxLength,
   Min,
-  MinDate,
   MinLength,
+  Validate,
 } from 'class-validator';
+
+import { createDateNowValidator } from '../validators/createDateNowValidator';
+import { createMinMaxValidator } from '../validators/createMinMaxValidator';
 
 export class CreateEventDTO {
   @IsString()
@@ -28,10 +31,22 @@ export class CreateEventDTO {
   @Transform(({ value }) => parseInt(value))
   maxPlayers: number;
 
-  @IsDate()
-  @MinDate(new Date())
+  @IsDateString()
+  @Validate(createDateNowValidator(), {
+    message: 'start registration date must be greater than current time',
+  })
   startRegistrationDate: Date;
 
-  @IsDate()
+  @IsDateString()
+  @Validate(createDateNowValidator(), {
+    message: 'end registration date must be greater than current time',
+  })
+  @Validate(
+    createMinMaxValidator(
+      'startRegistrationDate',
+      'endRegistrationDate',
+      'period start must be less than period end',
+    ),
+  )
   endRegistrationDate: Date;
 }
