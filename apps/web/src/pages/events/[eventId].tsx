@@ -26,9 +26,11 @@ import {
   SheetHeader,
   SheetTitle,
 } from '~/components/ui/sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import {
   PlayersList,
   RegisterEventForm,
+  TeamList,
 } from '~/features/events/event-details/components';
 import { axios } from '~/lib/axios';
 
@@ -174,7 +176,18 @@ const EventDetail: React.FC<EventDetailProps> = ({
             Join event
           </Button>
 
-          <PlayersList registeredPlayers={registeredPlayers} />
+          <Tabs defaultValue="player" className="mt-6 w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="player">Player list</TabsTrigger>
+              <TabsTrigger value="team">Team list</TabsTrigger>
+            </TabsList>
+            <TabsContent value="player">
+              <PlayersList registeredPlayers={registeredPlayers} />
+            </TabsContent>
+            <TabsContent value="team">
+              <TeamList />
+            </TabsContent>
+          </Tabs>
         </section>
 
         <Sheet open={sheetOpened} onOpenChange={setSheetOpened}>
