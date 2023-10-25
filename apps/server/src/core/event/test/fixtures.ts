@@ -42,3 +42,21 @@ export const eventsSeeders: Prisma.EventCreateManyInput[] = [
     title: 'Event 5',
   },
 ];
+
+export const eventTeamsSeeders: Prisma.EventTeamCreateManyInput[] = [
+  {
+    eventId: 1,
+  },
+  {
+    eventId: 1,
+  },
+  {
+    eventId: 1,
+  },
+  {
+    eventId: 1,
+  },
+  {
+    eventId: 1,
+  },
+];

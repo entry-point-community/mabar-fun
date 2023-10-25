@@ -156,4 +156,21 @@ export class EventService {
 
     return event;
   }
+
+  public async getEventTeams(eventId: number) {
+    const eventTeams = await this.prismaService.eventTeam.findMany({
+      where: {
+        eventId,
+      },
+      include: {
+        EventTeamPlayer: {
+          include: {
+            player: true,
+          },
+        },
+      },
+    });
+
+    return eventTeams;
+  }
 }

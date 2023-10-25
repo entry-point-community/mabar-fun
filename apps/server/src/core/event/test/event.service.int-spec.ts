@@ -7,7 +7,7 @@ import * as Mockdate from 'mockdate';
 import { creatorSeeder, userSeeder } from '~/core/auth/test/fixtures';
 import { PrismaService } from '~/lib/prisma.service';
 import { EventService } from '../event.service';
-import { eventsSeeders, profileSeeder } from './fixtures';
+import { eventsSeeders, eventTeamsSeeders, profileSeeder } from './fixtures';
 
 describe('EventService', () => {
   let eventService: EventService;
@@ -27,6 +27,10 @@ describe('EventService', () => {
 
     await prismaService.event.createMany({
       data: eventsSeeders,
+    });
+
+    await prismaService.eventTeam.createMany({
+      data: eventTeamsSeeders,
     });
   });
 
@@ -197,6 +201,14 @@ describe('EventService', () => {
 
         await expect(event).rejects.toThrow('user is not a creator');
       });
+    });
+  });
+
+  describe('getEventTeams', () => {
+    it('should return a list of event teams', async () => {
+      const eventTeams = await eventService.getEventTeams(1);
+
+      expect(eventTeams.length).toBe(5);
     });
   });
 });
