@@ -73,4 +73,15 @@ export class EventController {
 
     return eventTeams;
   }
+
+  @Post('/:eventId/teams')
+  @UseGuards(SupabaseGuard)
+  public async createTeamForEvent(
+    @User() user: AuthUser,
+    @Param('eventId') eventId: number,
+  ) {
+    const team = await this.eventService.createTeamForEvent(eventId, user.sub);
+
+    return team;
+  }
 }

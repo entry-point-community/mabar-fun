@@ -211,4 +211,25 @@ describe('EventService', () => {
       expect(eventTeams.length).toBe(5);
     });
   });
+
+  describe('createTeamForEvent', () => {
+    it('should create a team for an event', async () => {
+      const team = await eventService.createTeamForEvent(
+        1,
+        profileSeeder.userId,
+      );
+
+      expect(team).toMatchObject({
+        eventId: 1,
+      });
+    });
+
+    describe('when event does not belong to requesting user', () => {
+      it('should throw a not found exception', async () => {
+        const event = eventService.createTeamForEvent(1, userSeeder.userId);
+
+        await expect(event).rejects.toThrow('event not found');
+      });
+    });
+  });
 });

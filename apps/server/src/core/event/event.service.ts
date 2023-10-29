@@ -173,4 +173,23 @@ export class EventService {
 
     return eventTeams;
   }
+
+  public async createTeamForEvent(eventId: number, userId: string) {
+    const event = await this.prismaService.event.findFirst({
+      where: {
+        id: eventId,
+        profileUserId: userId,
+      },
+    });
+
+    if (!event) throw new NotFoundException('event not found');
+
+    const team = await this.prismaService.eventTeam.create({
+      data: {
+        eventId,
+      },
+    });
+
+    return team;
+  }
 }
