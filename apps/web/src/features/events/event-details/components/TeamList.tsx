@@ -93,9 +93,14 @@ export const TeamList: React.FC<TeamListProps> = ({ isOwner = false }) => {
       {data?.map((team) => {
         return (
           <div key={team.id} className="rounded-md border p-4">
-            <h5 className="mb-2 font-semibold text-muted-foreground">
-              Team {team.id}
-            </h5>
+            <div className="mb-4 flex items-center justify-between">
+              <h5 className="font-semibold text-muted-foreground">
+                Team {team.id}
+              </h5>
+              <Button variant="secondary" size="sm">
+                Tambah player
+              </Button>
+            </div>
             {team.EventTeamPlayer.map((player) => {
               return (
                 <div
@@ -103,7 +108,7 @@ export const TeamList: React.FC<TeamListProps> = ({ isOwner = false }) => {
                   key={player.profileUserId}
                 >
                   {player.player.mlbbUsername}
-                  <Badge variant="secondary">
+                  <Badge variant="outline">
                     {mlbbRoleEnumToText(player.role)}
                   </Badge>
                 </div>
