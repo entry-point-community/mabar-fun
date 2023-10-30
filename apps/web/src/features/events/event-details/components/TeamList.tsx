@@ -97,7 +97,9 @@ export const TeamList: React.FC<TeamListProps> = ({ isOwner = false }) => {
               <h5 className="font-semibold text-muted-foreground">
                 Team {team.id}
               </h5>
-              <Button size="sm">Tambah player</Button>
+              <Button size="sm">
+                Tambah player <PlusIcon className="ml-2" />
+              </Button>
             </div>
             {team.EventTeamPlayer.map((player) => {
               return (
