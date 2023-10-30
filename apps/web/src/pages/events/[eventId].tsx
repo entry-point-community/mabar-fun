@@ -185,7 +185,7 @@ const EventDetail: React.FC<EventDetailProps> = ({
               <PlayersList registeredPlayers={registeredPlayers} />
             </TabsContent>
             <TabsContent value="team">
-              <TeamList />
+              <TeamList isOwner={isOwner} />
             </TabsContent>
           </Tabs>
         </section>

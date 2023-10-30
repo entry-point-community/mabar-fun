@@ -10,7 +10,6 @@ export const createEvent: ApiFn<CreateEventDTO, AxiosPromise<Event>> = (
   createEventDTO,
   { axios = defaultAxios },
 ) => {
-  console.log(createEventDTO);
   return axios.post(`/events`, createEventDTO);
 };
 
