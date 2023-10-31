@@ -23,9 +23,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     try {
       await this.$transaction([
         ...tablenames.map((table) => {
-          console.log(
-            `TRUNCATE "public"."${table.tablename}" RESTART IDENTITY CASCADE;`,
-          );
           return this.$executeRawUnsafe(
             `TRUNCATE "public"."${table.tablename}" RESTART IDENTITY CASCADE;`,
           );
