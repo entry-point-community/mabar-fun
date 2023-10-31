@@ -14,14 +14,23 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       Array<{ tablename: string }>
     >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
 
-    const tables = tablenames
+    tablenames
       .map(({ tablename }) => tablename)
       .filter((name) => name !== '_prisma_migrations')
       .map((name) => `"public"."${name}"`)
       .join(', ');
 
     try {
-      await this.$executeRawUnsafe(`TRUNCATE TABLE ${tables} CASCADE;`);
+      await this.$transaction([
+        ...tablenames.map((table) => {
+          console.log(
+            `TRUNCATE "public"."${table.tablename}" RESTART IDENTITY CASCADE;`,
+          );
+          return this.$executeRawUnsafe(
+            `TRUNCATE "public"."${table.tablename}" RESTART IDENTITY CASCADE;`,
+          );
+        }),
+      ]);
     } catch (error) {
       console.log({ error });
     }
