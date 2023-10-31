@@ -33,12 +33,6 @@ model Profile {
   ProfileHero       ProfileHero[]
 }
 
-enum EventStatus {
-  WAITING_FOR_PLAYERS
-  PLAYING
-  ENDED
-}
-
 model Event {
   id                    Int                 @id @default(autoincrement())
   title                 String
@@ -51,8 +45,6 @@ model Event {
   startLiveDate         DateTime?
   EventRegistration     EventRegistration[]
   EventTeam             EventTeam[]
-  bannerImageUrl        String
-  status                EventStatus
   totalMatches          Int                 @default(1)
   livestreamUrl         String?
   maxPlayers            Int?                @default(0)

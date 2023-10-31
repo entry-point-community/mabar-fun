@@ -7,7 +7,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { GetEventsDTO, RegisterEventDTO } from '@v6/dto';
+import { CreateEventDTO, GetEventsDTO, RegisterEventDTO } from '@v6/dto';
 
 import { SupabaseGuard } from '../auth/supabase/supabase.guard';
 import { AuthUser } from '../auth/types';
@@ -54,5 +54,34 @@ export class EventController {
     );
 
     return eventRegistration;
+  }
+
+  @Post()
+  @UseGuards(SupabaseGuard)
+  public async createEvent(
+    @Body() createEventDTO: CreateEventDTO,
+    @User() user: AuthUser,
+  ) {
+    const event = await this.eventService.createEvent(createEventDTO, user.sub);
+
+    return event;
+  }
+
+  @Get('/:eventId/teams')
+  public async getEventTeams(@Param('eventId') eventId: number) {
+    const eventTeams = await this.eventService.getEventTeams(eventId);
+
+    return eventTeams;
+  }
+
+  @Post('/:eventId/teams')
+  @UseGuards(SupabaseGuard)
+  public async createTeamForEvent(
+    @User() user: AuthUser,
+    @Param('eventId') eventId: number,
+  ) {
+    const team = await this.eventService.createTeamForEvent(eventId, user.sub);
+
+    return team;
   }
 }

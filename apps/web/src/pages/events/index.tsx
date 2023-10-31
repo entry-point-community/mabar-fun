@@ -11,12 +11,6 @@ const EventsPage = () => {
     <>
       <HeadMetaData title="Events" />
       <main className="min-h-screen max-w-screen-md sm:container">
-        <div className=" flex flex-col items-center gap-6 md:gap-10">
-          <h1 className="max-w-screen-md text-center font-heading text-3xl font-semibold md:text-5xl">
-            Join event mabar bareng creator pilihan lo.
-          </h1>
-        </div>
-
         <section className="mt-10 flex flex-col gap-8 px-4">
           <div className="items-center gap-4">
             <Tabs>

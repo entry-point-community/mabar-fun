@@ -1,18 +1,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 import { Button } from '~/components/ui/button';
 import { Badge } from '../ui/badge';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -20,18 +11,12 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '../ui/navigation-menu';
+import { AvatarDropdown } from './AvatarDropdown';
+import { CreateDropdown } from './CreateDropdown';
 import { SheetMenu } from './SheetMenu';
-import { UserProfileCard } from './UserProfileCard';
 
 export const Header = () => {
   const [sheetOpened, setSheetOpened] = useState<boolean>(false);
-  const supabaseClient = useSupabaseClient();
-
-  const user = useUser();
-
-  const logout = () => {
-    supabaseClient.auth.signOut();
-  };
 
   const toggleSheetOpen = () => {
     setSheetOpened((prev) => !prev);
@@ -39,7 +24,7 @@ export const Header = () => {
 
   return (
     <>
-      <div className="mb-10 flex p-6 lg:grid lg:grid-cols-3 lg:justify-center">
+      <div className="mb-10 flex justify-between p-6 lg:grid lg:grid-cols-3 lg:justify-center">
         <div className="col-start-2 hidden justify-center lg:flex">
           <NavigationMenu>
             <NavigationMenuList>
@@ -66,40 +51,20 @@ export const Header = () => {
           </NavigationMenu>
         </div>
 
-        <div className="hidden justify-center lg:flex">
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <UserProfileCard />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/profile">Profile</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={logout}
-                  className="font-semibold text-red-500"
-                >
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button asChild>
-              <Link href="/auth/login">Login</Link>
-            </Button>
-          )}
-        </div>
-
         <Button
           onClick={toggleSheetOpen}
-          className="self-start lg:hidden"
-          variant="secondary"
+          className="rounded-full lg:hidden"
+          variant="ghost"
+          size="icon"
         >
-          <HamburgerMenuIcon />
+          <HamburgerMenuIcon className="h-5 w-5" />
         </Button>
+
+        <div className="flex justify-end gap-4 md:gap-6">
+          <CreateDropdown />
+          <AvatarDropdown />
+        </div>
+
         <SheetMenu
           open={sheetOpened}
           onOpenChange={(opened) => setSheetOpened(opened)}
