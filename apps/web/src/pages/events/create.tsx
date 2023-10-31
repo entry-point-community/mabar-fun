@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { CreateEventErrors, useCreateTeamForEventMutation } from '@v6/api';
+import { CreateEventErrors, useCreateEventMutation } from '@v6/api';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
@@ -9,7 +9,7 @@ import { CreateEventInner } from '~/features/events/create-event/components';
 const CreateEventPage = () => {
   const router = useRouter();
 
-  const { mutate } = useCreateTeamForEventMutation({
+  const { mutate } = useCreateEventMutation({
     onSuccess: () => {
       toast.success('Berhasil membuat event');
       router.push('/events');
