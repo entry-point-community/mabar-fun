@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select';
+import { PlayersListItem } from './PlayerListItem';
 
 interface PlayersListProps {
   registeredPlayers: Prisma.EventRegistrationGetPayload<{
@@ -65,15 +66,11 @@ export const PlayersList: React.FC<PlayersListProps> = ({
           )
           .map((registeredPlayer) => {
             return (
-              <div
-                className="col-span-full flex justify-between rounded-md bg-secondary px-3 py-1.5 text-sm md:col-span-1"
+              <PlayersListItem
                 key={registeredPlayer.profileUserId}
-              >
-                <p>{registeredPlayer.player.mlbbUsername}</p>
-                <p className="text-muted-foreground">
-                  {mlbbRoleEnumToText(registeredPlayer.role)}
-                </p>
-              </div>
+                mlbbUsername={registeredPlayer.player.mlbbUsername as string}
+                role={registeredPlayer.role}
+              />
             );
           })}
       </div>
