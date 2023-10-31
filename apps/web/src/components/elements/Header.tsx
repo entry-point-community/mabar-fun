@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
+import { useUser } from '@supabase/auth-helpers-react';
 
 import { Button } from '~/components/ui/button';
-import { useStore } from '~/store';
 import { Badge } from '../ui/badge';
 import {
   NavigationMenu,
@@ -17,7 +17,7 @@ import { CreateDropdown } from './CreateDropdown';
 import { SheetMenu } from './SheetMenu';
 
 export const Header = () => {
-  const { user } = useStore();
+  const user = useUser();
 
   const [sheetOpened, setSheetOpened] = useState<boolean>(false);
 
