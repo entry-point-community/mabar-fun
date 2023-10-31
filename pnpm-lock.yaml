@@ -419,6 +419,10 @@ importers:
       prisma:
         specifier: 5.1.1
         version: 5.1.1
+    devDependencies:
+      typescript:
+        specifier: 5.1.3
+        version: 5.1.3
 
   packages/dto:
     dependencies:
@@ -454,6 +458,9 @@ importers:
       '@types/node':
         specifier: ^20.8.3
         version: 20.8.3
+      typescript:
+        specifier: 5.1.3
+        version: 5.1.3
 
   packages/tsconfig: {}
 
