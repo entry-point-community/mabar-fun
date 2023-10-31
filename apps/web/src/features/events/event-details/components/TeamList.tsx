@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { PlusIcon } from '@radix-ui/react-icons';
-import {
-  useCreateTeamForTeamForEventMutation,
-  useGetEventTeamsQuery,
-} from '@v6/api';
+import { useCreateTeamForEventMutation, useGetEventTeamsQuery } from '@v6/api';
 import { toast } from 'sonner';
 
 import { mlbbRoleEnumToText } from '~/utils/role';
@@ -38,7 +35,7 @@ export const TeamList: React.FC<TeamListProps> = ({ isOwner = false }) => {
     },
   );
 
-  const { mutate: createTeamForEvent } = useCreateTeamForTeamForEventMutation({
+  const { mutate: createTeamForEvent } = useCreateTeamForEventMutation({
     onSuccess: async () => {
       setDialogIsOpen(false);
       toast.success('Berhasil membuat tim');
