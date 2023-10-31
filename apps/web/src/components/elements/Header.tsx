@@ -63,12 +63,18 @@ export const Header = () => {
           <HamburgerMenuIcon className="h-5 w-5" />
         </Button>
 
-        {!!user && (
-          <div className="flex justify-end gap-4 md:gap-6">
-            <CreateDropdown />
-            <AvatarDropdown />
-          </div>
-        )}
+        <div className="flex justify-end gap-4 md:gap-6">
+          {!user ? (
+            <Button asChild className="w-32" variant="secondary">
+              <Link href="/auth/login">Login</Link>
+            </Button>
+          ) : (
+            <>
+              <CreateDropdown />
+              <AvatarDropdown />
+            </>
+          )}
+        </div>
 
         <SheetMenu
           open={sheetOpened}
