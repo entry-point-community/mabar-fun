@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 
 import { Button } from '~/components/ui/button';
+import { useStore } from '~/store';
 import { Badge } from '../ui/badge';
 import {
   NavigationMenu,
@@ -16,6 +17,8 @@ import { CreateDropdown } from './CreateDropdown';
 import { SheetMenu } from './SheetMenu';
 
 export const Header = () => {
+  const { user } = useStore();
+
   const [sheetOpened, setSheetOpened] = useState<boolean>(false);
 
   const toggleSheetOpen = () => {
@@ -60,10 +63,12 @@ export const Header = () => {
           <HamburgerMenuIcon className="h-5 w-5" />
         </Button>
 
-        <div className="flex justify-end gap-4 md:gap-6">
-          <CreateDropdown />
-          <AvatarDropdown />
-        </div>
+        {!!user && (
+          <div className="flex justify-end gap-4 md:gap-6">
+            <CreateDropdown />
+            <AvatarDropdown />
+          </div>
+        )}
 
         <SheetMenu
           open={sheetOpened}
