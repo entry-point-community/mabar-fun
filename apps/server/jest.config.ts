@@ -21,6 +21,7 @@ const jestConfig: JestConfigWithTsJest = {
       lines: 80,
     },
   },
+  maxWorkers: 1,
 };
 
 export default jestConfig;
