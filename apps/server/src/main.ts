@@ -10,12 +10,7 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://v6-academy-web.vercel.app',
-      'https://v6-academy.com',
-      'https://www.v6-academy.com',
-    ],
+    origin: ['http://localhost:3000', 'https://mabar-fun-web.vercel.app'],
   });
 
   const httpAdapterHost = app.get(HttpAdapterHost);
