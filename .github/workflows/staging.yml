@@ -25,6 +25,7 @@ jobs:
             git checkout development
             git pull origin development
             pnpm install
+            pnpm build --filter=db
             pnpm build --filter=server
             pm2 start 0
         
