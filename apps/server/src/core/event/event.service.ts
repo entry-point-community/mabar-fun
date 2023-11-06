@@ -192,4 +192,17 @@ export class EventService {
 
     return team;
   }
+
+  public async getEventRegisteredPlayers(eventId: number) {
+    const players = await this.prismaService.eventRegistration.findMany({
+      where: {
+        eventId,
+      },
+      include: {
+        player: true,
+      },
+    });
+
+    return players;
+  }
 }

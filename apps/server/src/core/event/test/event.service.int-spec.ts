@@ -232,4 +232,12 @@ describe('EventService', () => {
       });
     });
   });
+
+  describe('getEventRegisteredPlayers', () => {
+    it('should return a list of players for an event', async () => {
+      const registeredPlayers = await eventService.getEventRegisteredPlayers(1);
+
+      expect(registeredPlayers.length).toBeGreaterThan(0);
+    });
+  });
 });

@@ -84,4 +84,12 @@ export class EventController {
 
     return team;
   }
+
+  @Get('/:eventId/players')
+  public async getEventRegisteredPlayers(@Param('eventId') eventId: number) {
+    const registeredPlayers =
+      await this.eventService.getEventRegisteredPlayers(eventId);
+
+    return registeredPlayers;
+  }
 }
