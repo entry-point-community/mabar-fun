@@ -4,8 +4,6 @@ import { PlusIcon } from '@radix-ui/react-icons';
 import { useCreateTeamForEventMutation, useGetEventTeamsQuery } from '@v6/api';
 import { toast } from 'sonner';
 
-import { mlbbRoleEnumToText } from '~/utils/role';
-import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,
@@ -18,6 +16,7 @@ import {
   DialogTrigger,
 } from '~/components/ui/dialog';
 import { queryClient } from '~/lib/react-query';
+import { TeamListItem } from './TeamListItem';
 
 type TeamListProps = {
   isOwner: boolean;
@@ -87,31 +86,15 @@ export const TeamList: React.FC<TeamListProps> = ({ isOwner = false }) => {
         </Dialog>
       )}
 
-      {data?.map((team) => {
+      {data?.map(({ id, EventTeamPlayer }) => {
         return (
-          <div key={team.id} className="rounded-md border p-4">
-            <div className="mb-4 flex items-center justify-between">
-              <h5 className="font-semibold text-muted-foreground">
-                Team {team.id}
-              </h5>
-              <Button size="sm">
-                Tambah player <PlusIcon className="ml-2" />
-              </Button>
-            </div>
-            {team.EventTeamPlayer.map((player) => {
-              return (
-                <div
-                  className="mb-1 flex justify-between text-sm"
-                  key={player.profileUserId}
-                >
-                  {player.player.mlbbUsername}
-                  <Badge variant="outline">
-                    {mlbbRoleEnumToText(player.role)}
-                  </Badge>
-                </div>
-              );
-            })}
-          </div>
+          <TeamListItem
+            key={id}
+            id={id}
+            players={EventTeamPlayer}
+            isOwner={isOwner}
+            eventId={parseInt(router.query.eventId as string)}
+          />
         );
       })}
     </div>
