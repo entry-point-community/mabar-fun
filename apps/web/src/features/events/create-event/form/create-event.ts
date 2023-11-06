@@ -17,10 +17,10 @@ export const createEventFormSchema = z
       .transform((maxPlayer) => Number(maxPlayer)),
     startRegistrationDate: z
       .date()
-      .min(new Date(), 'Tanggal tidak bisa sebelum hari ini'),
+      .min((new Date()).setHours(0,0,0,0), 'Tanggal tidak bisa sebelum hari ini'),
     endRegistrationDate: z
       .date()
-      .min(new Date(), 'Tanggal tidak bisa sebelum hari ini'),
+      .min((new Date()).setHours(0,0,0,0), 'Tanggal tidak bisa sebelum hari ini'),
   })
   .refine((data) => data.startRegistrationDate < data.endRegistrationDate, {
     path: ['endRegistrationDate'],
