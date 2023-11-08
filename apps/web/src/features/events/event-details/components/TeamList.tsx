@@ -91,7 +91,7 @@ export const TeamList: React.FC<TeamListProps> = ({ isOwner = false }) => {
           <TeamListItem
             key={id}
             id={id}
-            players={EventTeamPlayer}
+            teamPlayers={EventTeamPlayer}
             isOwner={isOwner}
             eventId={parseInt(router.query.eventId as string)}
           />
