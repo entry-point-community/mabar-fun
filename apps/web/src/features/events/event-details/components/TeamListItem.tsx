@@ -37,14 +37,10 @@ export const TeamListItem: React.FC<TeamListItemProps> = ({
         <h5 className="font-semibold text-muted-foreground">Team {id}</h5>
         {isOwner && (
           <>
-            <Button size="sm" className="hidden md:inline-flex">
+            {/* <Button size="sm" className="hidden md:inline-flex">
               Tambah player <PlusIcon className="ml-2" />
-            </Button>
-            <Button
-              onClick={() => setSheetOpened(true)}
-              size="sm"
-              className="md:hidden"
-            >
+            </Button> */}
+            <Button onClick={() => setSheetOpened(true)} size="sm">
               Tambah player <PlusIcon className="ml-2" />
             </Button>
           </>
@@ -63,6 +59,7 @@ export const TeamListItem: React.FC<TeamListItemProps> = ({
       })}
 
       <AddPlayerSheet
+        teamId={id}
         setSheetOpened={setSheetOpened}
         sheetOpened={sheetOpened}
         registeredPlayers={registeredPlayers || []}

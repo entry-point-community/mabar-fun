@@ -42,13 +42,13 @@ export const useGetEventsQuery = (
 ) => {
   const { axios, api } = useApiClient();
 
-  return useQuery(
-    ['events', query],
-    async () => {
+  return useQuery({
+    queryKey: ['events', query],
+    queryFn: async () => {
       const events = await api(getEvents(query || {}, { axios }));
 
       return events;
     },
-    options,
-  );
+    ...options,
+  });
 };

@@ -1,1 +1,1 @@
-export * from './register-player.dto';
+export * from './add-player.dto';

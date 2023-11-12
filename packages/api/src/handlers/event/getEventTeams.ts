@@ -26,17 +26,20 @@ export const getEventTeams: ApiFn<number, AxiosPromise<EventTeams[]>> = (
 
 export const useGetEventTeamsQuery = (
   eventId: number,
-  options?: UseQueryOptions<unknown, unknown, EventTeams[], any[]>,
+  options?: Omit<
+    UseQueryOptions<unknown, unknown, EventTeams[], any[]>,
+    'queryKey'
+  >,
 ) => {
   const { axios, api } = useApiClient();
 
-  return useQuery(
-    ['event-teams', eventId],
-    async () => {
+  return useQuery({
+    ...options,
+    queryKey: ['event-teams', eventId],
+    queryFn: async () => {
       const eventTeams = await api(getEventTeams(eventId, { axios }));
 
       return eventTeams;
     },
-    options,
-  );
+  });
 };

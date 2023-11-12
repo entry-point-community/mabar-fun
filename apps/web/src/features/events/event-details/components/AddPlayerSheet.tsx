@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { ShuffleIcon } from '@radix-ui/react-icons';
-import { RegisteredPlayer } from '@v6/api';
+import {
+  AddPlayerToTeamErrors,
+  RegisteredPlayer,
+  useAddPlayerToTeamMutation,
+} from '@v6/api';
 import { MlbbRole } from '@v6/db';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 import { mlbbRoleEnumToText } from '~/utils/role';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
@@ -25,12 +31,6 @@ import {
 } from '~/components/ui/sheet';
 import { PlayerSelectItem } from './PlayerSelectItem';
 
-type AddPlayerSheetProps = {
-  sheetOpened: boolean;
-  setSheetOpened: (state: boolean) => void;
-  registeredPlayers: RegisteredPlayer[];
-};
-
 type SelectedPlayer = {
   profilePictureUrl: string | null;
   displayName: string | null;
@@ -41,16 +41,58 @@ type SelectedPlayer = {
   profileUserId: string;
 };
 
+type AddPlayerSheetProps = {
+  sheetOpened: boolean;
+  setSheetOpened: (state: boolean) => void;
+  registeredPlayers: RegisteredPlayer[];
+  teamId: number;
+};
+
 export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
   setSheetOpened,
   sheetOpened,
   registeredPlayers,
+  teamId,
 }) => {
   const [searchUsername, setSearchUsername] = useState<string>('');
   const [searchRole, setSearchRole] = useState<MlbbRole>(MlbbRole.EXP);
   const [selectedPlayer, setSelectedPlayer] = useState<SelectedPlayer | null>(
     null,
   );
+
+  const { mutate, isPending } = useAddPlayerToTeamMutation({
+    onSuccess: () => {
+      toast.success('Player berhasil ditambahkan', { position: 'top-center' });
+    },
+    onError: (error) => {
+      if (error.isAxiosError) {
+        const err = error as AxiosError<{ errors: string[] }>;
+
+        if (
+          err?.response?.data.errors.includes(
+            AddPlayerToTeamErrors.ALREADY_REGISTERED,
+          )
+        ) {
+          toast.error('Player sudah terdaftar dalam tim', {
+            position: 'top-center',
+          });
+          return;
+        }
+      }
+    },
+  });
+
+  const handleAddPlayer = () => {
+    if (selectedPlayer) {
+      const { profileUserId, role } = selectedPlayer;
+
+      mutate({
+        mlbbRole: role,
+        playerId: profileUserId,
+        teamId,
+      });
+    }
+  };
 
   return (
     <Sheet open={sheetOpened} onOpenChange={setSheetOpened}>
@@ -150,7 +192,12 @@ export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
             ) : (
               <p className="text-xl font-semibold leading-none">-</p>
             )}
-            <Button disabled={!selectedPlayer}>Pilih player</Button>
+            <Button
+              onClick={handleAddPlayer}
+              disabled={!selectedPlayer || isPending}
+            >
+              Pilih player
+            </Button>
           </SheetFooter>
         </div>
       </SheetContent>
