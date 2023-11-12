@@ -31,100 +31,128 @@ type AddPlayerSheetProps = {
   registeredPlayers: RegisteredPlayer[];
 };
 
+type SelectedPlayer = {
+  profilePictureUrl: string | null;
+  displayName: string | null;
+  mlbbUsername: string | null;
+  mlbbUserId: string | null;
+  mlbbServerId: string | null;
+  role: MlbbRole;
+  profileUserId: string;
+};
+
 export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
   setSheetOpened,
   sheetOpened,
   registeredPlayers,
 }) => {
+  const [searchUsername, setSearchUsername] = useState<string>('');
   const [searchRole, setSearchRole] = useState<MlbbRole>(MlbbRole.EXP);
-  const [selectedPlayerProfileId, setSelectedPlayerProfileId] =
-    useState<string>('');
+  const [selectedPlayer, setSelectedPlayer] = useState<SelectedPlayer | null>(
+    null,
+  );
 
   return (
     <Sheet open={sheetOpened} onOpenChange={setSheetOpened}>
-      <SheetContent
-        side="bottom"
-        className="flex h-[95vh] flex-col justify-between"
-      >
-        <SheetHeader className="mb-2 text-left">
-          <SheetTitle>Tambah player</SheetTitle>
-          <div className="grid grid-cols-2 gap-2">
-            <Select
-              value={searchRole}
-              onValueChange={(value) => setSearchRole(value as MlbbRole)}
-            >
-              <SelectTrigger id="mlbb-role">
-                <SelectValue placeholder="Cari role" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.values(MlbbRole).map((role) => (
-                  <SelectItem key={role} value={role}>
-                    {mlbbRoleEnumToText(role)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Input placeholder="Search nickname" />
-          </div>
-          <Button variant="secondary" className="mt-2 w-full">
-            Random player <ShuffleIcon className="ml-2" />
-          </Button>
-        </SheetHeader>
-        <ScrollArea className="h-full pb-2">
-          <div className="flex flex-col gap-2">
-            {registeredPlayers
-              ?.filter(
-                (registeredPlayer) => registeredPlayer.role === searchRole,
-              )
-              .map(({ player, role, profileUserId }) => {
-                const {
-                  displayName,
-                  profilePictureUrl,
-                  mlbbUsername,
-                  mlbbUserId,
-                  mlbbServerId,
-                } = player;
+      <SheetContent side="bottom" className="h-[95vh]">
+        <div className="mx-auto flex h-full max-w-screen-md flex-col justify-between">
+          <SheetHeader className="mb-2 text-left">
+            <SheetTitle>Tambah player</SheetTitle>
+            <div className="grid grid-cols-2 gap-2">
+              <Select
+                value={searchRole}
+                onValueChange={(value) => setSearchRole(value as MlbbRole)}
+              >
+                <SelectTrigger id="mlbb-role">
+                  <SelectValue placeholder="Cari role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.values(MlbbRole).map((role) => (
+                    <SelectItem key={role} value={role}>
+                      {mlbbRoleEnumToText(role)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                value={searchUsername}
+                onChange={(e) => setSearchUsername(e.target.value)}
+                placeholder="Search nickname"
+              />
+            </div>
+            <Button variant="secondary" className="mt-2 w-full">
+              Random player <ShuffleIcon className="ml-2" />
+            </Button>
+          </SheetHeader>
+          <ScrollArea className="h-full pb-2">
+            <div className="flex flex-col gap-2">
+              {registeredPlayers
+                ?.filter(
+                  (registeredPlayer) =>
+                    registeredPlayer.role === searchRole &&
+                    registeredPlayer.player.mlbbUsername?.includes(
+                      searchUsername,
+                    ),
+                )
+                .map(({ player, role, profileUserId }) => {
+                  const {
+                    displayName,
+                    profilePictureUrl,
+                    mlbbUsername,
+                    mlbbUserId,
+                    mlbbServerId,
+                  } = player;
 
-                return (
-                  <PlayerSelectItem
-                    key={profileUserId}
-                    role={role}
-                    displayName={displayName as string}
-                    profilePictureUrl={profilePictureUrl}
-                    mlbbServerId={mlbbServerId as string}
-                    mlbbUserId={mlbbUserId as string}
-                    mlbbUsername={mlbbUsername as string}
-                    profileUserId={profileUserId}
-                    selected={profileUserId === selectedPlayerProfileId}
-                    onSelect={(profileId) =>
-                      setSelectedPlayerProfileId(profileId)
-                    }
-                  />
-                );
-              })}
-          </div>
-        </ScrollArea>
-        <SheetFooter className="flex flex-col gap-4 border-t-2 pt-2">
-          <SheetTitle>Player terpilih:</SheetTitle>
-          {/* TODO: use actual data */}
-          <div className="flex items-start gap-4">
-            <div className="flex w-16 flex-col flex-wrap justify-center gap-1.5">
-              <Avatar className="h-16 w-16 rounded-md">
-                <AvatarImage src="http://localhost:54321/storage/v1/object/public/profile-pictures/1697129641854-d749c822-58a1-4101-a0ba-db8dc6823933.jpeg" />
-                <AvatarFallback>VF</AvatarFallback>
-              </Avatar>
-              <p className="text-center text-sm text-muted-foreground">Full</p>
+                  return (
+                    <PlayerSelectItem
+                      key={profileUserId}
+                      role={role}
+                      displayName={displayName as string}
+                      profilePictureUrl={profilePictureUrl}
+                      mlbbServerId={mlbbServerId as string}
+                      mlbbUserId={mlbbUserId as string}
+                      mlbbUsername={mlbbUsername as string}
+                      profileUserId={profileUserId}
+                      selected={profileUserId === selectedPlayer?.profileUserId}
+                      onSelect={() =>
+                        setSelectedPlayer({ ...player, role, profileUserId })
+                      }
+                    />
+                  );
+                })}
             </div>
-            <div className="flex flex-col items-start">
-              <p>Nickname</p>
-              <p>12343212 (2211)</p>
-              <Badge className="mt-1.5" variant="secondary">
-                {mlbbRoleEnumToText(MlbbRole.JUNGLE)}
-              </Badge>
-            </div>
-          </div>
-          <Button>Pilih player</Button>
-        </SheetFooter>
+          </ScrollArea>
+          <SheetFooter className="flex flex-col gap-4 border-t-2 pt-2">
+            <SheetTitle>Player terpilih:</SheetTitle>
+            {selectedPlayer ? (
+              <div className="flex items-start gap-4">
+                <div className="flex w-16 flex-col flex-wrap justify-center gap-1.5">
+                  <Avatar className="h-16 w-16 rounded-md">
+                    <AvatarImage src={selectedPlayer.profilePictureUrl || ''} />
+                    <AvatarFallback>
+                      {selectedPlayer.displayName?.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <p className="text-center text-sm text-muted-foreground">
+                    {selectedPlayer.displayName}
+                  </p>
+                </div>
+                <div className="flex flex-col items-start">
+                  <p>{selectedPlayer.mlbbUsername}</p>
+                  <p>
+                    {selectedPlayer.mlbbUserId} ({selectedPlayer.mlbbServerId})
+                  </p>
+                  <Badge className="mt-1.5" variant="secondary">
+                    {mlbbRoleEnumToText(selectedPlayer.role)}
+                  </Badge>
+                </div>
+              </div>
+            ) : (
+              <p className="text-xl font-semibold leading-none">-</p>
+            )}
+            <Button disabled={!selectedPlayer}>Pilih player</Button>
+          </SheetFooter>
+        </div>
       </SheetContent>
     </Sheet>
   );
