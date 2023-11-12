@@ -29,6 +29,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '~/components/ui/sheet';
+import { queryClient } from '~/lib/react-query';
 import { PlayerSelectItem } from './PlayerSelectItem';
 
 type SelectedPlayer = {
@@ -46,6 +47,7 @@ type AddPlayerSheetProps = {
   setSheetOpened: (state: boolean) => void;
   registeredPlayers: RegisteredPlayer[];
   teamId: number;
+  eventId: number;
 };
 
 export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
@@ -53,6 +55,7 @@ export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
   sheetOpened,
   registeredPlayers,
   teamId,
+  eventId,
 }) => {
   const [searchUsername, setSearchUsername] = useState<string>('');
   const [searchRole, setSearchRole] = useState<MlbbRole>(MlbbRole.EXP);
@@ -61,8 +64,10 @@ export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
   );
 
   const { mutate, isPending } = useAddPlayerToTeamMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Player berhasil ditambahkan', { position: 'top-center' });
+      setSelectedPlayer(null);
+      await queryClient.invalidateQueries(['event-teams', eventId]);
     },
     onError: (error) => {
       if (error.isAxiosError) {

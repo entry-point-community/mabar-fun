@@ -59,6 +59,7 @@ export const TeamListItem: React.FC<TeamListItemProps> = ({
       })}
 
       <AddPlayerSheet
+        eventId={eventId}
         teamId={id}
         setSheetOpened={setSheetOpened}
         sheetOpened={sheetOpened}
