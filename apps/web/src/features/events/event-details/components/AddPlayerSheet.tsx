@@ -67,7 +67,11 @@ export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
     onSuccess: async () => {
       toast.success('Player berhasil ditambahkan', { position: 'top-center' });
       setSelectedPlayer(null);
-      await queryClient.invalidateQueries(['event-teams', eventId]);
+
+      await Promise.all([
+        queryClient.invalidateQueries(['registered-players', { eventId }]),
+        queryClient.invalidateQueries(['event-teams', eventId]),
+      ]);
     },
     onError: (error) => {
       if (error.isAxiosError) {
@@ -104,7 +108,7 @@ export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
       <SheetContent side="bottom" className="h-[95vh]">
         <div className="mx-auto flex h-full max-w-screen-md flex-col justify-between">
           <SheetHeader className="mb-2 text-left">
-            <SheetTitle>Tambah player</SheetTitle>
+            <SheetTitle>Tambah player untuk Team {teamId}</SheetTitle>
             <div className="grid grid-cols-2 gap-2">
               <Select
                 value={searchRole}
@@ -164,6 +168,7 @@ export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
                       onSelect={() =>
                         setSelectedPlayer({ ...player, role, profileUserId })
                       }
+                      teamsRegisteredIn={player.EventTeamPlayer}
                     />
                   );
                 })}

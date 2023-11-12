@@ -8,7 +8,11 @@ import { useApiClient } from '../../providers';
 const registeredPlayer =
   Prisma.validator<Prisma.EventRegistrationDefaultArgs>()({
     include: {
-      player: true,
+      player: {
+        include: {
+          EventTeamPlayer: true,
+        },
+      },
     },
   });
 

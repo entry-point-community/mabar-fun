@@ -50,6 +50,7 @@ export class TeamService {
         role: mlbbRole,
         eventTeamId: teamId,
         profileUserId: playerId,
+        eventId: team.eventId,
       },
     });
 
