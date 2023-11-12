@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 const queryConfig: DefaultOptions = {
   queries: {
-    useErrorBoundary: false,
+    throwOnError: false,
     refetchOnWindowFocus: false,
     retry: false,
   },

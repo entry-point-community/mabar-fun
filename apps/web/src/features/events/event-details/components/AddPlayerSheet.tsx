@@ -42,6 +42,8 @@ type SelectedPlayer = {
   profileUserId: string;
 };
 
+type SearchPlayerTeam = 'all' | 'no-team';
+
 type AddPlayerSheetProps = {
   sheetOpened: boolean;
   setSheetOpened: (state: boolean) => void;
@@ -62,6 +64,8 @@ export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
   const [selectedPlayer, setSelectedPlayer] = useState<SelectedPlayer | null>(
     null,
   );
+  const [searchPlayerTeam, setSearchPlayerTeam] =
+    useState<SearchPlayerTeam>('all');
 
   const { mutate, isPending } = useAddPlayerToTeamMutation({
     onSuccess: async () => {
@@ -69,8 +73,10 @@ export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
       setSelectedPlayer(null);
 
       await Promise.all([
-        queryClient.invalidateQueries(['registered-players', { eventId }]),
-        queryClient.invalidateQueries(['event-teams', eventId]),
+        queryClient.invalidateQueries({
+          queryKey: ['registered-players', { eventId }],
+        }),
+        queryClient.invalidateQueries({ queryKey: ['event-teams', eventId] }),
       ]);
     },
     onError: (error) => {
@@ -130,6 +136,20 @@ export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
                 onChange={(e) => setSearchUsername(e.target.value)}
                 placeholder="Search nickname"
               />
+              <Select
+                value={searchPlayerTeam}
+                onValueChange={(value) =>
+                  setSearchPlayerTeam(value as SearchPlayerTeam)
+                }
+              >
+                <SelectTrigger className="col-span-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Semua</SelectItem>
+                  <SelectItem value="no-team">Belum punya team</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <Button variant="secondary" className="mt-2 w-full">
               Random player <ShuffleIcon className="ml-2" />
@@ -138,13 +158,21 @@ export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
           <ScrollArea className="h-full pb-2">
             <div className="flex flex-col gap-2">
               {registeredPlayers
-                ?.filter(
-                  (registeredPlayer) =>
+                ?.filter((registeredPlayer) => {
+                  const defaultFilters =
                     registeredPlayer.role === searchRole &&
                     registeredPlayer.player.mlbbUsername?.includes(
                       searchUsername,
-                    ),
-                )
+                    );
+                  const hasTeam =
+                    registeredPlayer.player.EventTeamPlayer.length;
+
+                  if (searchPlayerTeam === 'no-team') {
+                    return defaultFilters && !hasTeam;
+                  }
+
+                  return defaultFilters;
+                })
                 .map(({ player, role, profileUserId }) => {
                   const {
                     displayName,

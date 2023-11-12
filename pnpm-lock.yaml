@@ -259,8 +259,8 @@ importers:
         specifier: ^0.6.1
         version: 0.6.1(typescript@5.1.3)(zod@3.22.2)
       '@tanstack/react-query':
-        specifier: 4.35.3
-        version: 4.35.3(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^5.8.2
+        version: 5.8.2(react-dom@18.2.0)(react@18.2.0)
       '@types/node':
         specifier: 20.5.1
         version: 20.5.1
@@ -312,6 +312,9 @@ importers:
       postcss:
         specifier: 8.4.28
         version: 8.4.28
+      posthog-js:
+        specifier: ^1.88.4
+        version: 1.88.4
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -2805,30 +2808,8 @@ packages:
       tailwindcss: 3.3.3
     dev: true
 
-  /@tanstack/query-core@4.35.3:
-    resolution: {integrity: sha512-PS+WEjd9wzKTyNjjQymvcOe1yg8f3wYc6mD+vb6CKyZAKvu4sIJwryfqfBULITKCla7P9C4l5e9RXePHvZOZeQ==}
-    dev: false
-
   /@tanstack/query-core@5.8.2:
     resolution: {integrity: sha512-tBTmTbBLxFQPCeKY5AcXdkTLtbQyYzak5yQohw4EKwEmFCFRqnViXjX8jkUd2pQN60Lf4RE2sD5UkzWqOw1ebw==}
-    dev: false
-
-  /@tanstack/react-query@4.35.3(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-UgTPioip/rGG3EQilXfA2j4BJkhEQsR+KAbF+KIuvQ7j4MkgnTCJF01SfRpIRNtQTlEfz/+IL7+jP8WA8bFbsw==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-native: '*'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-      react-native:
-        optional: true
-    dependencies:
-      '@tanstack/query-core': 4.35.3
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
   /@tanstack/react-query@5.8.2(react-dom@18.2.0)(react@18.2.0):
@@ -5977,6 +5958,10 @@ packages:
       web-streams-polyfill: 3.2.1
     dev: true
 
+  /fflate@0.4.8:
+    resolution: {integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==}
+    dev: false
+
   /figures@3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
     engines: {node: '>=8'}
@@ -8393,6 +8378,12 @@ packages:
       nanoid: 3.3.6
       picocolors: 1.0.0
       source-map-js: 1.0.2
+
+  /posthog-js@1.88.4:
+    resolution: {integrity: sha512-ZKgC0q22Bv0WGsi/BJcamDIoBR3DPpF26kCq0eFxtV3gKDMpGIlhlODQCo28bSENziGVO4LSeGrUvo/6OsQ7xA==}
+    dependencies:
+      fflate: 0.4.8
+    dev: false
 
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
