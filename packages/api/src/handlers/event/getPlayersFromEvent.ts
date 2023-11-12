@@ -8,7 +8,11 @@ import { useApiClient } from '../../providers';
 const registeredPlayer =
   Prisma.validator<Prisma.EventRegistrationDefaultArgs>()({
     include: {
-      player: true,
+      player: {
+        include: {
+          EventTeamPlayer: true,
+        },
+      },
     },
   });
 
@@ -29,15 +33,15 @@ export const useGetPlayersFromEventQuery = (
 ) => {
   const { axios, api } = useApiClient();
 
-  return useQuery(
-    ['registered-players', query],
-    async () => {
+  return useQuery({
+    queryKey: ['registered-players', query],
+    queryFn: async () => {
       const registeredPlayers = await api(
         getPlayersFromEvent(query, { axios }),
       );
 
       return registeredPlayers;
     },
-    options,
-  );
+    ...options,
+  });
 };

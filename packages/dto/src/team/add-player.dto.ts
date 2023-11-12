@@ -1,7 +1,7 @@
 import { MlbbRole } from '@v6/db';
 import { IsEnum, IsUUID } from 'class-validator';
 
-export class RegisterPlayerDTO {
+export class AddPlayerToTeamDTO {
   @IsEnum(MlbbRole)
   mlbbRole: MlbbRole;
 

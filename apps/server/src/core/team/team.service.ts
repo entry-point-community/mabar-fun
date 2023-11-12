@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { MlbbRole } from '@prisma/client';
 
 import { PrismaService } from '~/lib/prisma.service';
@@ -7,7 +11,7 @@ import { PrismaService } from '~/lib/prisma.service';
 export class TeamService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  public async registerPlayerToTeam(
+  public async addPlayerToTeam(
     ownerId: string,
     {
       teamId,
@@ -26,15 +30,27 @@ export class TeamService {
           profileUserId: ownerId,
         },
       },
+      include: {
+        EventTeamPlayer: true,
+      },
     });
 
     if (!team) throw new NotFoundException('team not found');
+
+    if (
+      team.EventTeamPlayer.some((player) => player.profileUserId === playerId)
+    ) {
+      throw new UnprocessableEntityException(
+        'player already registered to this team',
+      );
+    }
 
     const teamPlayer = await this.prismaService.eventTeamPlayer.create({
       data: {
         role: mlbbRole,
         eventTeamId: teamId,
         profileUserId: playerId,
+        eventId: team.eventId,
       },
     });
 

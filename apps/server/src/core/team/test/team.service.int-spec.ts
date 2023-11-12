@@ -43,9 +43,9 @@ describe('TeamService', () => {
     expect(teamService).toBeDefined();
   });
 
-  describe('registerPlayerToTeam', () => {
-    it('should register player to a team', async () => {
-      const teamPlayer = await teamService.registerPlayerToTeam(
+  describe('addPlayerToTeam', () => {
+    it('should add player to a team', async () => {
+      const teamPlayer = await teamService.addPlayerToTeam(
         profileSeeder.userId,
         {
           mlbbRole: MlbbRole.JUNGLE,
@@ -59,13 +59,27 @@ describe('TeamService', () => {
 
     describe('when request is not made by event owner', () => {
       it('should throw a not found error', async () => {
-        const teamPlayer = teamService.registerPlayerToTeam(userSeeder.userId, {
+        const teamPlayer = teamService.addPlayerToTeam(userSeeder.userId, {
           mlbbRole: MlbbRole.JUNGLE,
           playerId: creatorSeeder.userId,
           teamId: 1,
         });
 
         await expect(teamPlayer).rejects.toThrow('team not found');
+      });
+    });
+
+    describe('when user has already been registered to team', () => {
+      it('should add player to a team', async () => {
+        const teamPlayer = teamService.addPlayerToTeam(profileSeeder.userId, {
+          mlbbRole: MlbbRole.JUNGLE,
+          playerId: userSeeder.userId,
+          teamId: 1,
+        });
+
+        await expect(teamPlayer).rejects.toThrow(
+          'player already registered to this team',
+        );
       });
     });
   });

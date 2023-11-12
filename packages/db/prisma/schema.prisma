@@ -49,6 +49,7 @@ model Event {
   totalMatches          Int                 @default(1)
   livestreamUrl         String?
   maxPlayers            Int?                @default(0)
+  EventTeamPlayer       EventTeamPlayer[]
 }
 
 model EventRegistration {
@@ -75,7 +76,9 @@ model EventTeamPlayer {
   team          EventTeam @relation(fields: [eventTeamId], references: [id])
   player        Profile   @relation(fields: [profileUserId], references: [userId])
   role          MlbbRole
+  event         Event     @relation(fields: [eventId], references: [id])
   eventTeamId   Int
+  eventId       Int
   profileUserId String    @db.Uuid
 
   @@id([eventTeamId, profileUserId])

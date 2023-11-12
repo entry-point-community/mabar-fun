@@ -199,7 +199,15 @@ export class EventService {
         eventId,
       },
       include: {
-        player: true,
+        player: {
+          include: {
+            EventTeamPlayer: {
+              where: {
+                eventId,
+              },
+            },
+          },
+        },
       },
     });
 

@@ -38,10 +38,9 @@ export const TeamList: React.FC<TeamListProps> = ({ isOwner = false }) => {
     onSuccess: async () => {
       setDialogIsOpen(false);
       toast.success('Berhasil membuat tim');
-      await queryClient.invalidateQueries([
-        'event-teams',
-        Number(router.query.eventId),
-      ]);
+      await queryClient.invalidateQueries({
+        queryKey: ['event-teams', Number(router.query.eventId)],
+      });
     },
   });
 
@@ -91,7 +90,7 @@ export const TeamList: React.FC<TeamListProps> = ({ isOwner = false }) => {
           <TeamListItem
             key={id}
             id={id}
-            players={EventTeamPlayer}
+            teamPlayers={EventTeamPlayer}
             isOwner={isOwner}
             eventId={parseInt(router.query.eventId as string)}
           />
