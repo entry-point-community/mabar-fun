@@ -4,7 +4,7 @@ import { IsEnum, IsOptional, IsString, Length } from 'class-validator';
 export class EditProfileDTO {
   @IsString()
   @IsOptional()
-  @Length(8, 16)
+  @Length(4, 16)
   readonly mlbbUserId?: string;
 
   @IsString()
