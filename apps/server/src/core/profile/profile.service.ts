@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { MlbbRole, Prisma } from '@prisma/client';
 import { EditProfileDTO } from '@v6/dto';
 
 import { config } from '~/config';
@@ -53,17 +53,22 @@ export class ProfileService {
       editProfilePayload.profilePictureUrl = fileUrl;
     }
 
-    if (editProfileDTO.mlbbServerId && editProfileDTO.mlbbUserId) {
-      const mlbbAccountUsername = await this.getMlbbAccountUsername(
-        editProfileDTO.mlbbUserId,
-        editProfileDTO.mlbbServerId,
-      );
+    const mlbbAccountUsername = await this.getMlbbAccountUsername(
+      editProfileDTO.mlbbUserId,
+      editProfileDTO.mlbbServerId,
+    );
 
-      editProfilePayload.mlbbUsername = mlbbAccountUsername;
-    }
+    editProfilePayload.mlbbUsername = mlbbAccountUsername;
 
-    const updatedProfile = await this.prismaService.profile.update({
-      data: editProfilePayload,
+    const updatedProfile = await this.prismaService.profile.upsert({
+      create: {
+        displayName: String(editProfilePayload.displayName),
+        mlbbRole: editProfilePayload.mlbbRole as MlbbRole,
+        mlbbServerId: String(editProfilePayload.mlbbServerId),
+        mlbbUsername: editProfilePayload.mlbbUsername,
+        userId,
+      },
+      update: editProfilePayload,
       where: {
         userId,
       },
