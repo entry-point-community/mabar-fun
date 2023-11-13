@@ -1,7 +1,5 @@
+import { startOfDay } from 'date-fns';
 import * as z from 'zod';
-
-const currentDate = new Date();
-const startOfCurrentDate = new Date(currentDate.setHours(0, 0, 0, 0));
 
 export const createEventFormSchema = z
   .object({
@@ -20,10 +18,10 @@ export const createEventFormSchema = z
       .transform((maxPlayer) => Number(maxPlayer)),
     startRegistrationDate: z
       .date()
-      .min(startOfCurrentDate, 'Tanggal tidak bisa sebelum hari ini'),
+      .min(startOfDay(new Date()), 'Tanggal tidak bisa sebelum hari ini'),
     endRegistrationDate: z
       .date()
-      .min(startOfCurrentDate, 'Tanggal tidak bisa sebelum hari ini'),
+      .min(startOfDay(new Date()), 'Tanggal tidak bisa sebelum hari ini'),
   })
   .refine((data) => data.startRegistrationDate < data.endRegistrationDate, {
     path: ['endRegistrationDate'],
