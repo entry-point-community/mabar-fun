@@ -10,7 +10,8 @@ export function createDateNowValidator() {
   class DateNowValidator implements ValidatorConstraintInterface {
     validate(value: any) {
       const currentDate = new Date();
-      return getUnixTime(new Date(value)) > getUnixTime(currentDate);
+      const startOfCurrentDate = new Date(currentDate.setHours(0, 0, 0, 0));
+      return getUnixTime(new Date(value)) > getUnixTime(startOfCurrentDate);
     }
 
     defaultMessage() {

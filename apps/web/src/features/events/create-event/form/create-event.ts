@@ -1,5 +1,8 @@
 import * as z from 'zod';
 
+const currentDate = new Date();
+const startOfCurrentDate = new Date(currentDate.setHours(0, 0, 0, 0));
+
 export const createEventFormSchema = z
   .object({
     title: z
@@ -17,10 +20,10 @@ export const createEventFormSchema = z
       .transform((maxPlayer) => Number(maxPlayer)),
     startRegistrationDate: z
       .date()
-      .min((new Date()).setHours(0,0,0,0), 'Tanggal tidak bisa sebelum hari ini'),
+      .min(startOfCurrentDate, 'Tanggal tidak bisa sebelum hari ini'),
     endRegistrationDate: z
       .date()
-      .min((new Date()).setHours(0,0,0,0), 'Tanggal tidak bisa sebelum hari ini'),
+      .min(startOfCurrentDate, 'Tanggal tidak bisa sebelum hari ini'),
   })
   .refine((data) => data.startRegistrationDate < data.endRegistrationDate, {
     path: ['endRegistrationDate'],
