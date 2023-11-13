@@ -22,8 +22,6 @@ export const queryClient = new QueryClient({
           return;
         }
       }
-
-      toast.error('Something went wrong');
     },
   }),
 });
