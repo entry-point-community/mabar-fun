@@ -36,4 +36,5 @@ export enum RegisterEventErrors {
   ALREADY_REGISTERED = 'user has already been registered to the event',
   PAST_REGISTRATION = 'registration window has passed',
   BEFORE_REGISTRATION = 'registration is not opened yet',
+  NO_USERNAME = 'user has no MLBB username',
 }
