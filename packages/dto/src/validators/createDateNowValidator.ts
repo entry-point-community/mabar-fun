@@ -9,7 +9,10 @@ export function createDateNowValidator() {
   @ValidatorConstraint({ name: 'dateNowValidator', async: false })
   class DateNowValidator implements ValidatorConstraintInterface {
     validate(value: any) {
-      return getUnixTime(new Date(value)) > getUnixTime(startOfDay(new Date()));
+      return (
+        getUnixTime(startOfDay(new Date())) <=
+        getUnixTime(startOfDay(new Date(value)))
+      );
     }
 
     defaultMessage() {

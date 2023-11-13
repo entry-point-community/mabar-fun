@@ -38,9 +38,6 @@ export class CreateEventDTO {
   startRegistrationDate: Date;
 
   @IsDateString()
-  @Validate(createDateNowValidator(), {
-    message: 'end registration date must be greater than current time',
-  })
   @Validate(
     createMinMaxValidator(
       'startRegistrationDate',
