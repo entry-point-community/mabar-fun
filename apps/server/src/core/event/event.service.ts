@@ -74,7 +74,7 @@ export class EventService {
     userId: string,
     { mlbbRole, eventId }: RegisterEventDTO & { eventId: number },
   ) {
-    const [findUserRegisteredToEvent, event] = await Promise.all([
+    const [findUserRegisteredToEvent, event, userProfile] = await Promise.all([
       this.prismaService.eventRegistration.findUnique({
         where: {
           eventId_profileUserId: {
@@ -86,6 +86,11 @@ export class EventService {
       this.prismaService.event.findUnique({
         where: {
           id: eventId,
+        },
+      }),
+      this.prismaService.profile.findUnique({
+        where: {
+          userId,
         },
       }),
     ]);
@@ -112,6 +117,10 @@ export class EventService {
       throw new UnprocessableEntityException(
         'user has already been registered to the event',
       );
+    }
+
+    if (!userProfile?.mlbbUsername) {
+      throw new UnprocessableEntityException('user has no MLBB username');
     }
 
     return await this.prismaService.eventRegistration.create({

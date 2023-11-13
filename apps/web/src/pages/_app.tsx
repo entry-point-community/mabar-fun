@@ -12,6 +12,7 @@ import { Toaster } from 'sonner';
 
 import { Footer } from '~/components/elements/Footer';
 import { Header } from '~/components/elements/Header';
+import { OnboardingProvider } from '~/components/providers/onboarding-provider';
 import { ThemeProvider } from '~/components/providers/theme-provider';
 import { AxiosManager } from '~/lib/axios';
 import { queryClient } from '~/lib/react-query';
@@ -77,16 +78,18 @@ export default function App({ Component, pageProps }: AppProps) {
         <ApiClientProvider axiosInstance={axiosManager.axios}>
           <QueryClientProvider client={queryClient}>
             <Head>
-              <title>V6 Academy - Learn to Code the Practical Way</title>
+              <title>Mabar Fun</title>
             </Head>
             <ThemeProvider attribute="class" forcedTheme="dark">
               <main
                 className={`${inter.variable} ${poppins.variable} font-sans`}
               >
-                <Header />
-                <Component {...pageProps} />
-                <Footer />
-                <Toaster richColors />
+                <OnboardingProvider>
+                  <Header />
+                  <Component {...pageProps} />
+                  <Footer />
+                  <Toaster richColors />
+                </OnboardingProvider>
               </main>
             </ThemeProvider>
           </QueryClientProvider>

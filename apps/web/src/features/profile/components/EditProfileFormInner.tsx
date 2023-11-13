@@ -34,7 +34,7 @@ type EditProfileFormInnerProps = {
   onSubmit: (
     values: EditProfileFormSchema & { profilePictureFile?: File },
   ) => void;
-  onCancel: () => void;
+  onCancel?: () => void;
 };
 
 export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
@@ -223,9 +223,11 @@ export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
             <Button size="sm" type="submit" disabled={!hasVerifiedAccount}>
               Save
             </Button>
-            <Button onClick={onCancel} size="sm" variant="secondary">
-              Cancel
-            </Button>
+            {onCancel && (
+              <Button onClick={onCancel} size="sm" variant="secondary">
+                Cancel
+              </Button>
+            )}
           </div>
         </form>
       </Form>
