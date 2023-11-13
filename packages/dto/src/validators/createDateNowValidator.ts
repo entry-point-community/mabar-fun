@@ -2,15 +2,17 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { getUnixTime } from 'date-fns';
+import { getUnixTime, startOfDay } from 'date-fns';
 
 // to validate if input time is lower than current time
 export function createDateNowValidator() {
   @ValidatorConstraint({ name: 'dateNowValidator', async: false })
   class DateNowValidator implements ValidatorConstraintInterface {
     validate(value: any) {
-      const currentDate = new Date();
-      return getUnixTime(new Date(value)) > getUnixTime(currentDate);
+      return (
+        getUnixTime(startOfDay(new Date())) <=
+        getUnixTime(startOfDay(new Date(value)))
+      );
     }
 
     defaultMessage() {
