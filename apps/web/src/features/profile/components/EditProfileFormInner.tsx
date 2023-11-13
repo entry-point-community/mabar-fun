@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useRef, useState } from 'react';
+import { ChangeEventHandler, useMemo, useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useGetProfileQuery } from '@v6/api';
 import { MlbbRole } from '@v6/db';
@@ -78,12 +78,12 @@ export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
     }
   };
 
-  const renderProfilePictureUrl = () => {
+  const previewProfilePictureUrl = useMemo(() => {
     if (selectedProfilePictureFile)
       return URL.createObjectURL(selectedProfilePictureFile);
 
     return profile?.data.profilePictureUrl || '';
-  };
+  }, [profile?.data.profilePictureUrl, selectedProfilePictureFile]);
 
   return (
     <>
@@ -92,7 +92,7 @@ export const EditProfileFormInner: React.FC<EditProfileFormInnerProps> = ({
           <AvatarFallback>
             {profile?.data.displayName?.charAt(0)}
           </AvatarFallback>
-          <AvatarImage src={renderProfilePictureUrl()} />
+          <AvatarImage src={previewProfilePictureUrl} />
         </Avatar>
         <Input
           onChange={handleInputProfilePictureChange}
