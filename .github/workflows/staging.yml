@@ -26,6 +26,7 @@ jobs:
             git pull origin development
             pnpm install
             pnpm build --filter=db
+            pnpm build --filter=dto
             pnpm build --filter=server
             pnpm turbo run db:deploy --filter=db
             pm2 start 0
