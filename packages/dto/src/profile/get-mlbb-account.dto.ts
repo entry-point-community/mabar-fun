@@ -2,7 +2,7 @@ import { IsString, Length } from 'class-validator';
 
 export class GetMlbbAccountDTO {
   @IsString()
-  @Length(8, 16)
+  @Length(4, 16)
   readonly mlbbUserId: string;
 
   @IsString()
