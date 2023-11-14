@@ -1,6 +1,8 @@
 name: Deploy Staging API
 
-on: [workflow_dispatch]
+on:
+  push:
+    branches: ['development']
 
 jobs:
   build:
