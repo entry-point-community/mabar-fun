@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MlbbRole } from '@prisma/client';
@@ -124,6 +125,56 @@ describe('EventService', () => {
         );
 
         await expect(eventRegistration).rejects.toThrow('event not found');
+      });
+    });
+
+    describe('when attempting to join owned event', () => {
+      it('should throw an unprocessable entity exception', async () => {
+        const eventRegistration = eventService.registerToEvent(
+          profileSeeder.userId,
+          {
+            eventId: 1,
+            mlbbRole: MlbbRole.JUNGLE,
+          },
+        );
+
+        await expect(eventRegistration).rejects.toThrow(
+          'unable to join owned event',
+        );
+      });
+    });
+
+    describe('when user has no MLBB username', () => {
+      it('should throw an unprocessable entity exception', async () => {
+        await prismaService.profile.update({
+          data: {
+            mlbbUsername: null,
+          },
+          where: {
+            userId: creatorSeeder.userId,
+          },
+        });
+
+        const eventRegistration = eventService.registerToEvent(
+          creatorSeeder.userId,
+          {
+            eventId: 1,
+            mlbbRole: MlbbRole.JUNGLE,
+          },
+        );
+
+        await expect(eventRegistration).rejects.toThrow(
+          'user has no MLBB username',
+        );
+
+        await prismaService.profile.update({
+          data: {
+            mlbbUsername: faker.person.firstName(),
+          },
+          where: {
+            userId: creatorSeeder.userId,
+          },
+        });
       });
     });
 

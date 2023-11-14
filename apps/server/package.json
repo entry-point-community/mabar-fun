@@ -24,6 +24,7 @@
     "pretest:local": "dotenv -e .env.test.local -- npx prisma migrate reset --force"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.2.0",
     "@nestjs/axios": "^3.0.0",
     "@nestjs/common": "^10.2.6",
     "@nestjs/config": "^3.0.0",
