@@ -29,19 +29,21 @@ import {
 
 type CreateEventInnerProps = {
   onSubmit: (values: CreateEventFormSchema) => void;
+  defaultValues?: CreateEventFormSchema;
 };
 
 export const CreateEventInner: React.FC<CreateEventInnerProps> = ({
   onSubmit,
+  defaultValues,
 }) => {
   const form = useForm<CreateEventFormSchema>({
     resolver: zodResolver(createEventFormSchema),
     defaultValues: {
-      description: '',
-      endRegistrationDate: new Date(),
-      startRegistrationDate: new Date(),
-      maxPlayers: 1,
-      title: '',
+      description: defaultValues?.description || '',
+      endRegistrationDate: defaultValues?.endRegistrationDate || new Date(),
+      startRegistrationDate: defaultValues?.startRegistrationDate || new Date(),
+      maxPlayers: defaultValues?.maxPlayers || 1,
+      title: defaultValues?.title || '',
     },
     reValidateMode: 'onChange',
   });

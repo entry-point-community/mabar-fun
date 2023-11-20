@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { Prisma } from '@v6/db';
 import defaultAxios, { AxiosPromise } from 'axios';
+import { SetOptional } from 'type-fest';
 
 import { ApiFn } from '../../lib/react-query';
 import { useApiClient } from '../../providers';
@@ -36,7 +37,10 @@ export const getEventById: ApiFn<number, AxiosPromise<EventWithDetails>> = (
 
 export const useGetEventByIdQuery = (
   eventId: number,
-  options?: UseQueryOptions<unknown, unknown, EventWithDetails, any[]>,
+  options?: SetOptional<
+    UseQueryOptions<unknown, unknown, EventWithDetails, any[]>,
+    'queryKey'
+  >,
 ) => {
   const { axios, api } = useApiClient();
 
