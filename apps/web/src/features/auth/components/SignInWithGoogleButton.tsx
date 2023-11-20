@@ -1,14 +1,24 @@
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { createBrowserClient } from '@supabase/ssr';
 import { FcGoogle } from 'react-icons/fc';
 
 import { Button } from '~/components/ui/button';
+import { env } from '~/env.mjs';
 
 export const SignInWithGoogleButton = () => {
-  const supabaseClient = useSupabaseClient();
+  const supabaseClient = createBrowserClient(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_KEY,
+  );
 
   const signInWithGoogle = async () => {
     await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
+      options: {
+        redirectTo: new URL(
+          '/api/auth/callback',
+          env.NEXT_PUBLIC_CLIENT_URL,
+        ).toString(),
+      },
     });
   };
 

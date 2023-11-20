@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { AppProps } from 'next/app';
 import { Inter, Poppins } from 'next/font/google';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ApiClientProvider } from '@v6/api';
@@ -32,6 +33,7 @@ const inter = Inter({
 const axiosManager = new AxiosManager();
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   const { onAuthSuccess, onLogout } = useStore();
 
   const [supabaseClient] = useState(() => supabase);
@@ -59,6 +61,7 @@ export default function App({ Component, pageProps }: AppProps) {
       }
 
       onLogout();
+      router.push('/');
     });
 
     return () => subscription.unsubscribe();

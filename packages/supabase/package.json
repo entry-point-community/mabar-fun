@@ -11,6 +11,7 @@
   "author": "theodevoid",
   "license": "ISC",
   "dependencies": {
+    "@supabase/ssr": "^0.0.10",
     "@supabase/supabase-js": "^2.33.2",
     "@t3-oss/env-core": "^0.7.0",
     "zod": "^3.22.2"
