@@ -5,7 +5,12 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { CreateEventDTO, GetEventsDTO, RegisterEventDTO } from '@v6/dto';
+import {
+  CreateEventDTO,
+  GetEventsDTO,
+  RegisterEventDTO,
+  UpdateEventDTO,
+} from '@v6/dto';
 
 import { PrismaService } from '~/lib/prisma.service';
 
@@ -221,5 +226,31 @@ export class EventService {
     });
 
     return players;
+  }
+
+  public async updateEvent(
+    userId: string,
+    eventId: number,
+    updateEventDTO: UpdateEventDTO,
+  ) {
+    const event = await this.prismaService.event.findUnique({
+      where: {
+        id: eventId,
+      },
+    });
+
+    if (!event) throw new NotFoundException('event not found');
+
+    const updatedEvent = await this.prismaService.event.update({
+      where: {
+        profileUserId: userId,
+        id: eventId,
+      },
+      data: {
+        ...updateEventDTO,
+      },
+    });
+
+    return updatedEvent;
   }
 }
