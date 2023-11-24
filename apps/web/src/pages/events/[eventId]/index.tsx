@@ -122,15 +122,17 @@ const EventDetail: React.FC<EventDetailProps> = ({
           <p className="text-sm md:hidden">{displayName}</p>
           <div className="flex gap-2">
             <h1 className="text-2xl font-semibold">{title}</h1>
-            <Link
-              className={cn(
-                buttonVariants({ variant: 'ghost', size: 'icon' }),
-                'rounded-full',
-              )}
-              href={`/events/${id}/edit`}
-            >
-              <Pencil1Icon className="h-6 w-6" />
-            </Link>
+            {isOwner && (
+              <Link
+                className={cn(
+                  buttonVariants({ variant: 'ghost', size: 'icon' }),
+                  'rounded-full',
+                )}
+                href={`/events/${id}/edit`}
+              >
+                <Pencil1Icon className="h-6 w-6" />
+              </Link>
+            )}
           </div>
 
           <div className="flex flex-col gap-1 text-sm">
