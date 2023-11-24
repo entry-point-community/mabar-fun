@@ -13,12 +13,6 @@ export const SignInWithGoogleButton = () => {
   const signInWithGoogle = async () => {
     await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: new URL(
-          '/api/auth/callback',
-          env.NEXT_PUBLIC_CLIENT_URL,
-        ).toString(),
-      },
     });
   };
 

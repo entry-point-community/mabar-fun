@@ -1,6 +1,6 @@
 import '~/styles/globals.css';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import { Inter, Poppins } from 'next/font/google';
 import Head from 'next/head';
@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ApiClientProvider } from '@v6/api';
-import { supabaseClient as supabase } from '@v6/supabase/nextjs';
+import { supabaseClient } from '@v6/supabase/nextjs';
 import { Toaster } from 'sonner';
 
 import { Footer } from '~/components/elements/Footer';
@@ -35,8 +35,6 @@ const axiosManager = new AxiosManager();
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const { onAuthSuccess, onLogout } = useStore();
-
-  const [supabaseClient] = useState(() => supabase);
 
   useEffect(() => {
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
@@ -65,6 +63,7 @@ export default function App({ Component, pageProps }: AppProps) {
     });
 
     return () => subscription.unsubscribe();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -75,6 +74,7 @@ export default function App({ Component, pageProps }: AppProps) {
         global
       >{`:root { --font-inter: ${inter.style.fontFamily};}}`}</style>
       <SessionContextProvider
+        // @ts-expect-error supabase package types are not in sync yet
         supabaseClient={supabaseClient}
         initialSession={pageProps.initialSession}
       >

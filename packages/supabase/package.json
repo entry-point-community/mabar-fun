@@ -11,6 +11,7 @@
   "author": "theodevoid",
   "license": "ISC",
   "dependencies": {
+    "@supabase/auth-helpers-nextjs": "^0.8.7",
     "@supabase/ssr": "^0.0.10",
     "@supabase/supabase-js": "^2.33.2",
     "@t3-oss/env-core": "^0.7.0",
