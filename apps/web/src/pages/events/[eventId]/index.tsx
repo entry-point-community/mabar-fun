@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import { ExternalLinkIcon } from '@radix-ui/react-icons';
+import { ExternalLinkIcon, Pencil1Icon } from '@radix-ui/react-icons';
 import { useUser } from '@supabase/auth-helpers-react';
 import { getEventById, useRegisterEventMutation } from '@v6/api';
 import { Prisma } from '@v6/db';
@@ -119,7 +119,19 @@ const EventDetail: React.FC<EventDetailProps> = ({
 
         <section className="container col-span-3 mt-6 flex flex-col gap-2 md:mt-0">
           <p className="text-sm md:hidden">{displayName}</p>
-          <h1 className="text-2xl font-semibold">{title}</h1>
+          <div className="flex gap-2">
+            <h1 className="text-2xl font-semibold">{title}</h1>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="rounded-full"
+              asChild
+            >
+              <Link href={`/events/${id}/edit`}>
+                <Pencil1Icon className="h-6 w-6" />
+              </Link>
+            </Button>
+          </div>
 
           <div className="flex flex-col gap-1 text-sm">
             <div className="flex items-center gap-2">

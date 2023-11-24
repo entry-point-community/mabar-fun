@@ -1,7 +1,12 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { EventWithDetails, getEventById } from '@v6/api';
+import {
+  EventWithDetails,
+  getEventById,
+  useUpdateEventMutation,
+} from '@v6/api';
 import { supabaseServerClient } from '@v6/supabase/nextjs';
+import { toast } from 'sonner';
 
 import { HeadMetaData } from '~/components/meta/HeadMetaData';
 import { CreateEventInner } from '~/features/events/create-event/components';
@@ -14,6 +19,13 @@ type EditEventProps = {
 const EditEvent: React.FC<EditEventProps> = ({ event }) => {
   const router = useRouter();
 
+  const { isPending, mutate } = useUpdateEventMutation({
+    onSuccess: () => {
+      toast.success('berhasil edit event');
+      router.replace(`/events/${router.query.eventId}`);
+    },
+  });
+
   return (
     <>
       <HeadMetaData />
@@ -21,6 +33,7 @@ const EditEvent: React.FC<EditEventProps> = ({ event }) => {
         <h1 className="mb-4 text-2xl font-semibold">Edit Event</h1>
 
         <CreateEventInner
+          isPending={isPending}
           defaultValues={{
             description: event.description,
             endRegistrationDate: new Date(event.endRegistrationDate),
@@ -28,6 +41,9 @@ const EditEvent: React.FC<EditEventProps> = ({ event }) => {
             startRegistrationDate: new Date(event.startRegistrationDate),
             title: event.title,
           }}
+          onSubmit={(values) =>
+            mutate({ ...values, eventId: Number(router.query.eventId) })
+          }
         />
       </main>
     </>

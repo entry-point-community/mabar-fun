@@ -10,7 +10,9 @@ export const updateEvent: ApiFn<
   UpdateEventDTO & { eventId: number },
   AxiosPromise<Event>
 > = (updateEventDTO, { axios = defaultAxios }) => {
-  return axios.patch(`/events/${updateEventDTO.eventId}`, updateEventDTO);
+  const { eventId, ...body } = updateEventDTO;
+
+  return axios.patch(`/events/${eventId}`, body);
 };
 
 type MutationFnType = typeof updateEvent;
