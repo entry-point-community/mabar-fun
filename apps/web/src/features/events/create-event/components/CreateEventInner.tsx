@@ -30,7 +30,7 @@ import {
 type CreateEventInnerProps = {
   onSubmit: (values: CreateEventFormSchema) => void;
   defaultValues?: CreateEventFormSchema;
-  isPending: boolean;
+  isPending?: boolean;
 };
 
 export const CreateEventInner: React.FC<CreateEventInnerProps> = ({
