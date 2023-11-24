@@ -13,12 +13,6 @@ export const SignInWithGithubButton = () => {
   const signInWithGithub = async () => {
     await supabaseClient.auth.signInWithOAuth({
       provider: 'github',
-      options: {
-        redirectTo: new URL(
-          '/api/auth/callback',
-          env.NEXT_PUBLIC_CLIENT_URL,
-        ).toString(),
-      },
     });
   };
 

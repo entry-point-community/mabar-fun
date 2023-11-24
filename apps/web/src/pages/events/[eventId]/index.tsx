@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import { ExternalLinkIcon } from '@radix-ui/react-icons';
+import { ExternalLinkIcon, Pencil1Icon } from '@radix-ui/react-icons';
 import { useUser } from '@supabase/auth-helpers-react';
 import { getEventById, useRegisterEventMutation } from '@v6/api';
 import { Prisma } from '@v6/db';
@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { HeadMetaData } from '~/components/meta/HeadMetaData';
 import { AspectRatio } from '~/components/ui/aspect-ratio';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
-import { Button } from '~/components/ui/button';
+import { Button, buttonVariants } from '~/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -33,6 +33,7 @@ import {
   TeamList,
 } from '~/features/events/event-details/components';
 import { axios } from '~/lib/axios';
+import { cn } from '~/lib/utils';
 
 interface EventDetailProps {
   title: string;
@@ -119,7 +120,18 @@ const EventDetail: React.FC<EventDetailProps> = ({
 
         <section className="container col-span-3 mt-6 flex flex-col gap-2 md:mt-0">
           <p className="text-sm md:hidden">{displayName}</p>
-          <h1 className="text-2xl font-semibold">{title}</h1>
+          <div className="flex gap-2">
+            <h1 className="text-2xl font-semibold">{title}</h1>
+            <Link
+              className={cn(
+                buttonVariants({ variant: 'ghost', size: 'icon' }),
+                'rounded-full',
+              )}
+              href={`/events/${id}/edit`}
+            >
+              <Pencil1Icon className="h-6 w-6" />
+            </Link>
+          </div>
 
           <div className="flex flex-col gap-1 text-sm">
             <div className="flex items-center gap-2">

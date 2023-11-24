@@ -3,11 +3,17 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreateEventDTO, GetEventsDTO, RegisterEventDTO } from '@v6/dto';
+import {
+  CreateEventDTO,
+  GetEventsDTO,
+  RegisterEventDTO,
+  UpdateEventDTO,
+} from '@v6/dto';
 
 import { SupabaseGuard } from '../auth/supabase/supabase.guard';
 import { AuthUser } from '../auth/types';
@@ -91,5 +97,21 @@ export class EventController {
       await this.eventService.getEventRegisteredPlayers(eventId);
 
     return registeredPlayers;
+  }
+
+  @Patch('/:eventId')
+  @UseGuards(SupabaseGuard)
+  public async updateEvent(
+    @User() user: AuthUser,
+    @Param('eventId') eventId: number,
+    @Body() updateEventDTO: UpdateEventDTO,
+  ) {
+    const updatedEvent = await this.eventService.updateEvent(
+      user.sub,
+      eventId,
+      updateEventDTO,
+    );
+
+    return updatedEvent;
   }
 }

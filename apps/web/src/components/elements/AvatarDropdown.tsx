@@ -34,6 +34,9 @@ export const AvatarDropdown = () => {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
+          <Link href="/dashboard">Dashboard Creator</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link href="/profile">Profile</Link>
         </DropdownMenuItem>
         <DropdownMenuItem

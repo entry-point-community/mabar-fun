@@ -29,19 +29,23 @@ import {
 
 type CreateEventInnerProps = {
   onSubmit: (values: CreateEventFormSchema) => void;
+  defaultValues?: CreateEventFormSchema;
+  isPending?: boolean;
 };
 
 export const CreateEventInner: React.FC<CreateEventInnerProps> = ({
   onSubmit,
+  defaultValues,
+  isPending = false,
 }) => {
   const form = useForm<CreateEventFormSchema>({
     resolver: zodResolver(createEventFormSchema),
     defaultValues: {
-      description: '',
-      endRegistrationDate: new Date(),
-      startRegistrationDate: new Date(),
-      maxPlayers: 1,
-      title: '',
+      description: defaultValues?.description || '',
+      endRegistrationDate: defaultValues?.endRegistrationDate || new Date(),
+      startRegistrationDate: defaultValues?.startRegistrationDate || new Date(),
+      maxPlayers: defaultValues?.maxPlayers || 1,
+      title: defaultValues?.title || '',
     },
     reValidateMode: 'onChange',
   });
@@ -199,8 +203,8 @@ export const CreateEventInner: React.FC<CreateEventInnerProps> = ({
           />
         </div>
 
-        <Button type="submit" className="mt-4 w-full">
-          Buat event
+        <Button disabled={isPending} type="submit" className="mt-4 w-full">
+          Simpan
         </Button>
       </form>
     </Form>

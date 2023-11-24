@@ -291,4 +291,32 @@ describe('EventService', () => {
       expect(registeredPlayers.length).toBeGreaterThan(0);
     });
   });
+
+  describe('updateEvent', () => {
+    it('should update the event', async () => {
+      const updatedEvent = await eventService.updateEvent(
+        eventsSeeders[0].profileUserId,
+        1,
+        {
+          description: 'Updated description',
+        },
+      );
+
+      expect(updatedEvent.description).toBe('Updated description');
+    });
+
+    describe("when given an event ID that  doesn't exist", () => {
+      it('should throw a not found exception', async () => {
+        const updatedEvent = eventService.updateEvent(
+          eventsSeeders[0].profileUserId,
+          100,
+          {
+            description: 'Updated description',
+          },
+        );
+
+        expect(updatedEvent).rejects.toThrow('event not found');
+      });
+    });
+  });
 });
