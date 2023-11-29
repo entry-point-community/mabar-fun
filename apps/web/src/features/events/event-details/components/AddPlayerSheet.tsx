@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { ShuffleIcon } from '@radix-ui/react-icons';
 import {
   AddPlayerToTeamErrors,
   RegisteredPlayer,
@@ -151,9 +150,9 @@ export const AddPlayerSheet: React.FC<AddPlayerSheetProps> = ({
                 </SelectContent>
               </Select>
             </div>
-            <Button variant="secondary" className="mt-2 w-full">
+            {/* <Button variant="secondary" className="mt-2 w-full">
               Random player <ShuffleIcon className="ml-2" />
-            </Button>
+            </Button> */}
           </SheetHeader>
           <ScrollArea className="h-full pb-2">
             <div className="flex flex-col gap-2">

@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { EventTeamPlayer, Profile } from '@v6/db';
-import { AddPlayerToTeamDTO, EditProfileDTO, RegisterEventDTO } from '@v6/dto';
+import { AddPlayerToTeamDTO } from '@v6/dto';
 import defaultAxios, { AxiosPromise } from 'axios';
 
 import { ApiFn, MutationConfig } from '../../lib/react-query';
