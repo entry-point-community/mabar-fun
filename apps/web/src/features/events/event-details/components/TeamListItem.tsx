@@ -6,6 +6,7 @@ import {
   useGetPlayersFromEventQuery,
 } from '@v6/api';
 import { Prisma } from '@v6/db';
+import { toast } from 'sonner';
 
 import { mlbbRoleEnumToText } from '~/utils/role';
 import {
@@ -68,15 +69,20 @@ export const TeamListItem: React.FC<TeamListItemProps> = ({
     },
   });
 
+  const onClickUserIdCopyHandler = async (
+    mlbbUserId: string,
+    mlbbServerId: string,
+  ) => {
+    await navigator.clipboard.writeText(`${mlbbUserId} (${mlbbServerId})`);
+    toast('Berhasil copy ID');
+  };
+
   return (
     <div className="rounded-md border p-4">
       <div className="mb-4 flex items-center justify-between">
         <h5 className="font-semibold text-muted-foreground">Team {id}</h5>
         {isOwner && (
           <>
-            {/* <Button size="sm" className="hidden md:inline-flex">
-              Tambah player <PlusIcon className="ml-2" />
-            </Button> */}
             <Button onClick={() => setSheetOpened(true)} size="sm">
               Tambah player <PlusIcon className="ml-2" />
             </Button>
@@ -86,10 +92,25 @@ export const TeamListItem: React.FC<TeamListItemProps> = ({
       {teamPlayers.map((player) => {
         return (
           <div
-            className="mb-1 flex justify-between text-sm"
+            className="mb-1 flex items-center justify-between text-sm"
             key={player.profileUserId}
           >
-            {player.player.mlbbUsername}
+            <div className="flex flex-col">
+              <p className="text-xs text-muted-foreground">
+                {player.player.mlbbUsername}
+              </p>
+              <p
+                className="hover:cursor-pointer"
+                onClick={() =>
+                  onClickUserIdCopyHandler(
+                    player.player.mlbbUserId || '',
+                    player.player.mlbbServerId || '',
+                  )
+                }
+              >
+                {player.player.mlbbUserId} ({player.player.mlbbServerId})
+              </p>
+            </div>
             <div className="flex gap-2">
               <Badge variant="outline">{mlbbRoleEnumToText(player.role)}</Badge>
               <Button
