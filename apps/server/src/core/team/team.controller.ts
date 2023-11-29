@@ -47,4 +47,15 @@ export class TeamController {
 
     return deletedEventTeamPlayer;
   }
+
+  @Delete('/:teamId')
+  @UseGuards(SupabaseGuard)
+  public async deleteTeam(
+    @User() user: AuthUser,
+    @Param('teamId') teamId: number,
+  ) {
+    const deletedTeam = await this.teamService.deleteTeam(user.sub, teamId);
+
+    return deletedTeam;
+  }
 }

@@ -118,4 +118,53 @@ describe('TeamService', () => {
       });
     });
   });
+
+  describe('deleteTeam', () => {
+    describe('when team has no players', () => {
+      it('should delete team', async () => {
+        await teamService.deleteTeam(profileSeeder.userId, 2);
+
+        const deletedTeam = await prismaService.eventTeam.findUnique({
+          where: {
+            id: 2,
+          },
+        });
+
+        expect(deletedTeam).toBe(null);
+      });
+    });
+
+    describe('when team has players registered', () => {
+      it('should delete team', async () => {
+        const TEAM_ID = 3;
+
+        await prismaService.eventTeamPlayer.createMany({
+          data: [
+            {
+              eventId: 1,
+              eventTeamId: TEAM_ID,
+              profileUserId: userSeeder.userId,
+              role: 'JUNGLE',
+            },
+            {
+              eventId: 1,
+              eventTeamId: TEAM_ID,
+              profileUserId: creatorSeeder.userId,
+              role: 'GOLD',
+            },
+          ],
+        });
+
+        await teamService.deleteTeam(profileSeeder.userId, TEAM_ID);
+
+        const deletedTeam = await prismaService.eventTeam.findUnique({
+          where: {
+            id: 3,
+          },
+        });
+
+        expect(deletedTeam).toBe(null);
+      });
+    });
+  });
 });

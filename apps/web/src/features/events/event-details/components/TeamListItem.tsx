@@ -2,13 +2,23 @@ import { useState } from 'react';
 import { Cross1Icon, PlusIcon } from '@radix-ui/react-icons';
 import {
   useDeletePlayerFromTeamMutation,
+  useDeleteTeamMutation,
   useGetPlayersFromEventQuery,
 } from '@v6/api';
 import { Prisma } from '@v6/db';
 
 import { mlbbRoleEnumToText } from '~/utils/role';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '~/components/ui/alert-dialog';
 import { Badge } from '~/components/ui/badge';
-import { Button } from '~/components/ui/button';
+import { Button, buttonVariants } from '~/components/ui/button';
 import { queryClient } from '~/lib/react-query';
 import { AddPlayerSheet } from './AddPlayerSheet';
 
@@ -30,11 +40,27 @@ export const TeamListItem: React.FC<TeamListItemProps> = ({
   eventId,
 }) => {
   const [sheetOpened, setSheetOpened] = useState<boolean>(false);
+  const [dialogIsOpened, setDialogIsOpened] = useState<boolean>(false);
 
   const { data: registeredPlayers } = useGetPlayersFromEventQuery({
     eventId,
   });
-  const { mutate, variables, isPending } = useDeletePlayerFromTeamMutation({
+  const {
+    mutate: deletePlayerFromTeam,
+    variables: deletePlayerFromTeamVariables,
+    isPending: deletePlayerFromTeamIsPending,
+  } = useDeletePlayerFromTeamMutation({
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['event-teams', Number(eventId)],
+      });
+    },
+  });
+  const {
+    mutate: deleteTeam,
+    variables: deleteTeamVariables,
+    isPending: deleteTeamIsPending,
+  } = useDeleteTeamMutation({
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ['event-teams', Number(eventId)],
@@ -71,12 +97,16 @@ export const TeamListItem: React.FC<TeamListItemProps> = ({
                 className="h-5 w-5 rounded-full"
                 variant="secondary"
                 disabled={
-                  isPending &&
-                  variables.playerId === player.profileUserId &&
-                  player.eventTeamId === variables.teamId
+                  deletePlayerFromTeamIsPending &&
+                  deletePlayerFromTeamVariables.playerId ===
+                    player.profileUserId &&
+                  player.eventTeamId === deletePlayerFromTeamVariables.teamId
                 }
                 onClick={() =>
-                  mutate({ playerId: player.profileUserId, teamId: id })
+                  deletePlayerFromTeam({
+                    playerId: player.profileUserId,
+                    teamId: id,
+                  })
                 }
               >
                 <Cross1Icon className="h-3 w-3" />
@@ -85,6 +115,46 @@ export const TeamListItem: React.FC<TeamListItemProps> = ({
           </div>
         );
       })}
+
+      <Button
+        onClick={() => {
+          setDialogIsOpened(true);
+        }}
+        disabled={deleteTeamVariables?.teamId === id && deleteTeamIsPending}
+        variant="destructive"
+        size="sm"
+        className="mt-4"
+      >
+        Delete team
+      </Button>
+
+      {/* TODO: Refactor me */}
+      <AlertDialog
+        open={dialogIsOpened}
+        onOpenChange={(opened) => setDialogIsOpened(opened)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Apa kamu yakin ingin delete team?
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className={buttonVariants({ variant: 'destructive' })}
+              onClick={() => {
+                deleteTeam({ teamId: id });
+              }}
+              disabled={
+                deleteTeamVariables?.teamId === id && deleteTeamIsPending
+              }
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AddPlayerSheet
         eventId={eventId}
