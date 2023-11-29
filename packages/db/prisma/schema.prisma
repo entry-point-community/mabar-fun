@@ -73,7 +73,7 @@ model EventTeam {
 }
 
 model EventTeamPlayer {
-  team          EventTeam @relation(fields: [eventTeamId], references: [id])
+  team          EventTeam @relation(fields: [eventTeamId], references: [id], onDelete: Cascade)
   player        Profile   @relation(fields: [profileUserId], references: [userId])
   role          MlbbRole
   event         Event     @relation(fields: [eventId], references: [id])
