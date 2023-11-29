@@ -56,4 +56,24 @@ export class TeamService {
 
     return teamPlayer;
   }
+
+  public async deletePlayerFromTeam(
+    ownerUserId: string,
+    teamId: number,
+    toBeDeletedPlayerId: string,
+  ) {
+    const eventTeamPlayer = await this.prismaService.eventTeamPlayer.delete({
+      where: {
+        eventTeamId_profileUserId: {
+          profileUserId: toBeDeletedPlayerId,
+          eventTeamId: teamId,
+        },
+        event: {
+          profileUserId: ownerUserId,
+        },
+      },
+    });
+
+    return eventTeamPlayer;
+  }
 }

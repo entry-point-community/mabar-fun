@@ -1,4 +1,11 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AddPlayerToTeamDTO } from '@v6/dto';
 
 import { SupabaseGuard } from '../auth/supabase/supabase.guard';
@@ -23,5 +30,21 @@ export class TeamController {
     });
 
     return teamPlayer;
+  }
+
+  @Delete('/:teamId/players/:playerId')
+  @UseGuards(SupabaseGuard)
+  public async deletePlayerFromTeam(
+    @User() user: AuthUser,
+    @Param('teamId') teamId: number,
+    @Param('playerId') playerId: string,
+  ) {
+    const deletedEventTeamPlayer = await this.teamService.deletePlayerFromTeam(
+      user.sub,
+      teamId,
+      playerId,
+    );
+
+    return deletedEventTeamPlayer;
   }
 }

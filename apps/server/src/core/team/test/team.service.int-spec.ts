@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MlbbRole } from '@prisma/client';
+import { MlbbRole, Prisma } from '@prisma/client';
 
 import { creatorSeeder, userSeeder } from '~/core/auth/test/fixtures';
 import {
@@ -79,6 +79,41 @@ describe('TeamService', () => {
 
         await expect(teamPlayer).rejects.toThrow(
           'player already registered to this team',
+        );
+      });
+    });
+  });
+
+  describe('deletePlayerFromTeam', () => {
+    it('should delete player from team', async () => {
+      await teamService.deletePlayerFromTeam(
+        profileSeeder.userId,
+        1,
+        userSeeder.userId,
+      );
+
+      const team = await prismaService.eventTeam.findUnique({
+        where: {
+          id: 1,
+        },
+        include: {
+          EventTeamPlayer: true,
+        },
+      });
+
+      expect(team?.EventTeamPlayer.length).toBe(0);
+    });
+
+    describe('when request is not made by event owner', () => {
+      it('should throw a prisma error', async () => {
+        const deletePlayer = teamService.deletePlayerFromTeam(
+          creatorSeeder.userId,
+          1,
+          userSeeder.userId,
+        );
+
+        expect(deletePlayer).rejects.toThrow(
+          Prisma.PrismaClientKnownRequestError,
         );
       });
     });
