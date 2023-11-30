@@ -11,6 +11,7 @@ import {
   RegisterEventDTO,
   UpdateEventDTO,
 } from '@v6/dto';
+import { startOfDay } from 'date-fns';
 
 import { PrismaService } from '~/lib/prisma.service';
 
@@ -19,12 +20,20 @@ export class EventService {
   constructor(private readonly prismaService: PrismaService) {}
 
   public async getEvents(getEventsDTO: GetEventsDTO) {
-    const { limit = 10, page = 1 } = getEventsDTO;
+    const { limit = 10, page = 1, ...whereParams } = getEventsDTO;
 
     const paginationParams: Pick<Prisma.EventCountArgs, 'skip' | 'take'> = {
       skip: (page - 1) * limit,
       take: limit,
     };
+
+    const whereClause: Prisma.EventWhereInput = {};
+
+    if (whereParams.isOngoing) {
+      whereClause.endRegistrationDate = {
+        gte: startOfDay(new Date()),
+      };
+    }
 
     const [records, count] = await this.prismaService.$transaction([
       this.prismaService.event.findMany({
@@ -36,6 +45,9 @@ export class EventService {
               EventRegistration: true,
             },
           },
+        },
+        where: {
+          ...whereClause,
         },
       }),
       this.prismaService.event.count({
