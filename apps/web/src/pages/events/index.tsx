@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { EventCard } from '~/features/events/components';
 
 const EventsPage = () => {
-  const eventsQuery = useGetEventsQuery({ limit: 10 });
+  const eventsQuery = useGetEventsQuery({ limit: 10, isOngoing: true });
 
   return (
     <>
@@ -13,9 +13,9 @@ const EventsPage = () => {
       <main className="min-h-screen max-w-screen-md sm:container">
         <section className="mt-10 flex flex-col gap-8 px-4">
           <div className="items-center gap-4">
-            <Tabs>
+            <Tabs defaultValue="terbaru">
               <TabsList className="gap-2">
-                <TabsTrigger value="recommended">Recommended</TabsTrigger>
+                <TabsTrigger value="terbaru">Terbaru</TabsTrigger>
                 <TabsTrigger disabled value="following">
                   Following
                 </TabsTrigger>
