@@ -50,7 +50,7 @@ const OnboardingPage = () => {
   return (
     <>
       <HeadMetaData />
-      <main className="container flex min-h-screen flex-col">
+      <main className="container flex min-h-screen max-w-screen-md flex-col">
         <h1 className="mx-auto mb-10 max-w-md text-center font-heading text-4xl font-semibold">
           Lengkapin profile kamu dulu sebelum lanjut ya
         </h1>
