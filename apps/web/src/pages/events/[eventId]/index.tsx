@@ -3,9 +3,14 @@ import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { ExternalLinkIcon, Pencil1Icon } from '@radix-ui/react-icons';
 import { useUser } from '@supabase/auth-helpers-react';
-import { getEventById, useRegisterEventMutation } from '@v6/api';
+import {
+  getEventById,
+  useGetPlayersFromEventRealtime,
+  useRegisterEventMutation,
+} from '@v6/api';
 import { Prisma } from '@v6/db';
 import { RegisterEventDTO } from '@v6/dto';
+import { supabaseClient } from '@v6/supabase/nextjs';
 import { format, isFuture, isPast } from 'date-fns';
 import { IoCalendar, IoCloseCircle, IoPerson } from 'react-icons/io5';
 import { toast } from 'sonner';
@@ -33,6 +38,7 @@ import {
   TeamList,
 } from '~/features/events/event-details/components';
 import { axios } from '~/lib/axios';
+import { supabase } from '~/lib/supabase';
 import { cn } from '~/lib/utils';
 
 interface EventDetailProps {
@@ -98,6 +104,10 @@ const EventDetail: React.FC<EventDetailProps> = ({
     isBeforeStartRegistrationDate ||
     isRegistered ||
     !user;
+
+  useGetPlayersFromEventRealtime(id, (payload) => {
+    console.log(payload);
+  });
 
   return (
     <>

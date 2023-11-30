@@ -394,6 +394,9 @@ importers:
       '@v6/dto':
         specifier: workspace:^
         version: link:../dto
+      '@v6/supabase':
+        specifier: workspace:^
+        version: link:../supabase
       axios:
         specifier: ^1.5.0
         version: 1.5.0

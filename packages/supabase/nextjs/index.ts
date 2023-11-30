@@ -5,6 +5,8 @@ import {
 
 import { env } from '../env';
 
+export * from '@supabase/supabase-js';
+
 export const supabaseClient = createPagesBrowserClient({
   supabaseKey: env.NEXT_PUBLIC_SUPABASE_KEY,
   supabaseUrl: env.NEXT_PUBLIC_SUPABASE_URL,
