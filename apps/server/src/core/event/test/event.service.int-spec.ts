@@ -319,4 +319,35 @@ describe('EventService', () => {
       });
     });
   });
+
+  describe('removePlayerFromEvent', () => {
+    it('should remove player from event', async () => {
+      const registeredPlayer = await prismaService.eventRegistration.findFirst({
+        where: {
+          eventId: 1,
+          profileUserId: userSeeder.userId,
+        },
+      });
+
+      expect(registeredPlayer).toMatchObject({
+        eventId: 1,
+        profileUserId: userSeeder.userId,
+      });
+
+      await eventService.removePlayerFromEvent(
+        1,
+        userSeeder.userId,
+        profileSeeder.userId,
+      );
+
+      const removedPlayer = await prismaService.eventRegistration.findFirst({
+        where: {
+          eventId: 1,
+          profileUserId: userSeeder.userId,
+        },
+      });
+
+      expect(removedPlayer).toBeNull();
+    });
+  });
 });
