@@ -265,4 +265,34 @@ export class EventService {
 
     return updatedEvent;
   }
+
+  public async removePlayerFromEvent(
+    eventId: number,
+    playerId: string,
+    userId: string,
+  ) {
+    const registeredPlayer =
+      await this.prismaService.eventRegistration.findFirst({
+        where: {
+          profileUserId: playerId,
+          event: {
+            id: eventId,
+            profileUserId: userId,
+          },
+        },
+      });
+
+    if (!registeredPlayer) {
+      throw new NotFoundException('player not registered');
+    }
+
+    await this.prismaService.eventRegistration.delete({
+      where: {
+        eventId_profileUserId: {
+          eventId: registeredPlayer.eventId,
+          profileUserId: registeredPlayer.profileUserId,
+        },
+      },
+    });
+  }
 }

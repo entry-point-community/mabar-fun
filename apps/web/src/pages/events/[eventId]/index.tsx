@@ -3,7 +3,11 @@ import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { ExternalLinkIcon, Pencil1Icon } from '@radix-ui/react-icons';
 import { useUser } from '@supabase/auth-helpers-react';
-import { getEventById, useRegisterEventMutation } from '@v6/api';
+import {
+  getEventById,
+  useGetPlayersFromEventQuery,
+  useRegisterEventMutation,
+} from '@v6/api';
 import { Prisma } from '@v6/db';
 import { RegisterEventDTO } from '@v6/dto';
 import { format, isFuture, isPast } from 'date-fns';
@@ -32,6 +36,7 @@ import {
   RegisterEventForm,
   TeamList,
 } from '~/features/events/event-details/components';
+import { EventContext } from '~/features/events/event-details/context/event';
 import { axios } from '~/lib/axios';
 import { cn } from '~/lib/utils';
 
@@ -53,7 +58,6 @@ interface EventDetailProps {
 
 const EventDetail: React.FC<EventDetailProps> = ({
   title,
-  registeredPlayers,
   description,
   displayName,
   profilePictureUrl,
@@ -75,6 +79,9 @@ const EventDetail: React.FC<EventDetailProps> = ({
       window.location.reload();
     },
   });
+  const { data: registeredPlayers } = useGetPlayersFromEventQuery({
+    eventId: id,
+  });
 
   const handleRegisterEvent = ({ mlbbRole }: RegisterEventDTO) => {
     mutate({
@@ -88,7 +95,7 @@ const EventDetail: React.FC<EventDetailProps> = ({
   const isBeforeStartRegistrationDate = isFuture(
     new Date(startRegistrationDate),
   );
-  const isRegistered = registeredPlayers.some(
+  const isRegistered = registeredPlayers?.some(
     (player) => player.profileUserId === user?.id,
   );
 
@@ -102,132 +109,139 @@ const EventDetail: React.FC<EventDetailProps> = ({
   return (
     <>
       <HeadMetaData />
-      <main className="md:container md:grid md:grid-cols-4">
-        <div className="flex flex-col gap-2">
-          <AspectRatio ratio={1 / 1}>
-            <Avatar className="h-full w-full rounded-md">
-              <AvatarFallback className="rounded-md">TM</AvatarFallback>
-              <AvatarImage
-                className="rounded-md"
-                src={profilePictureUrl || ''}
-              />
-            </Avatar>
-          </AspectRatio>
-          <p className="hidden text-center text-lg md:inline-block">
-            {displayName}
-          </p>
-        </div>
-
-        <section className="container col-span-3 mt-6 flex flex-col gap-2 md:mt-0">
-          <p className="text-sm md:hidden">{displayName}</p>
-          <div className="flex gap-2">
-            <h1 className="text-2xl font-semibold">{title}</h1>
-            {isOwner && (
-              <Link
-                className={cn(
-                  buttonVariants({ variant: 'ghost', size: 'icon' }),
-                  'rounded-full',
-                )}
-                href={`/events/${id}/edit`}
-              >
-                <Pencil1Icon className="h-6 w-6" />
-              </Link>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-1 text-sm">
-            <div className="flex items-center gap-2">
-              <IoCalendar />{' '}
-              <span>
-                {format(new Date(startRegistrationDate), 'dd MMMM yyyy')}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <IoCloseCircle />{' '}
-              <span>
-                {format(new Date(endRegistrationDate), 'dd MMMM yyyy')}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <IoPerson />{' '}
-              <span>
-                {!maxPlayers ? 'Unlimited' : maxPlayers} players quota
-              </span>
-            </div>
-            {!!livestreamUrl && (
-              <Button
-                variant="destructive"
-                size="sm"
-                className="mt-1 flex w-fit items-center"
-                asChild
-              >
-                <Link href={livestreamUrl} target="_blank">
-                  Watch Live <ExternalLinkIcon className="ml-2 h-3.5 w-3.5" />
-                </Link>
-              </Button>
-            )}
-          </div>
-
-          {!!description && (
-            <p className="mt-2 max-w-lg rounded-md border p-4 text-sm text-muted-foreground">
-              {description}
+      <EventContext.Provider
+        value={{
+          eventId: id,
+          isOwner,
+        }}
+      >
+        <main className="md:container md:grid md:grid-cols-4">
+          <div className="flex flex-col gap-2">
+            <AspectRatio ratio={1 / 1}>
+              <Avatar className="h-full w-full rounded-md">
+                <AvatarFallback className="rounded-md">TM</AvatarFallback>
+                <AvatarImage
+                  className="rounded-md"
+                  src={profilePictureUrl || ''}
+                />
+              </Avatar>
+            </AspectRatio>
+            <p className="hidden text-center text-lg md:inline-block">
+              {displayName}
             </p>
-          )}
+          </div>
 
-          <Button
-            disabled={buttonIsDisabled}
-            onClick={() => setSheetOpened(true)}
-            className="mt-2 w-full self-start md:hidden"
-          >
-            Join event
-          </Button>
+          <section className="container col-span-3 mt-6 flex flex-col gap-2 md:mt-0">
+            <p className="text-sm md:hidden">{displayName}</p>
+            <div className="flex gap-2">
+              <h1 className="text-2xl font-semibold">{title}</h1>
+              {isOwner && (
+                <Link
+                  className={cn(
+                    buttonVariants({ variant: 'ghost', size: 'icon' }),
+                    'rounded-full',
+                  )}
+                  href={`/events/${id}/edit`}
+                >
+                  <Pencil1Icon className="h-6 w-6" />
+                </Link>
+              )}
+            </div>
 
-          <Button
-            disabled={buttonIsDisabled}
-            onClick={() => setDialogOpened(true)}
-            className="mt-2 hidden self-start md:inline-block"
-          >
-            Join event
-          </Button>
+            <div className="flex flex-col gap-1 text-sm">
+              <div className="flex items-center gap-2">
+                <IoCalendar />{' '}
+                <span>
+                  {format(new Date(startRegistrationDate), 'dd MMMM yyyy')}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <IoCloseCircle />{' '}
+                <span>
+                  {format(new Date(endRegistrationDate), 'dd MMMM yyyy')}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <IoPerson />{' '}
+                <span>
+                  {!maxPlayers ? 'Unlimited' : maxPlayers} players quota
+                </span>
+              </div>
+              {!!livestreamUrl && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="mt-1 flex w-fit items-center"
+                  asChild
+                >
+                  <Link href={livestreamUrl} target="_blank">
+                    Watch Live <ExternalLinkIcon className="ml-2 h-3.5 w-3.5" />
+                  </Link>
+                </Button>
+              )}
+            </div>
 
-          <Tabs defaultValue="player" className="mt-6 w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="player">Player list</TabsTrigger>
-              <TabsTrigger value="team">Team list</TabsTrigger>
-            </TabsList>
-            <TabsContent value="player">
-              <PlayersList registeredPlayers={registeredPlayers} />
-            </TabsContent>
-            <TabsContent value="team">
-              <TeamList isOwner={isOwner} />
-            </TabsContent>
-          </Tabs>
-        </section>
+            {!!description && (
+              <p className="mt-2 max-w-lg rounded-md border p-4 text-sm text-muted-foreground">
+                {description}
+              </p>
+            )}
 
-        <Sheet open={sheetOpened} onOpenChange={setSheetOpened}>
-          <SheetContent side="bottom">
-            <SheetHeader className="text-left">
-              <SheetTitle>Daftar event</SheetTitle>
-            </SheetHeader>
-            <RegisterEventForm
-              onRegister={handleRegisterEvent}
-              playerRoles={registeredPlayers}
-            />
-          </SheetContent>
-        </Sheet>
+            <Button
+              disabled={buttonIsDisabled}
+              onClick={() => setSheetOpened(true)}
+              className="mt-2 w-full self-start md:hidden"
+            >
+              Join event
+            </Button>
 
-        <Dialog open={dialogOpened} onOpenChange={setDialogOpened}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Daftar event</DialogTitle>
-            </DialogHeader>
-            <RegisterEventForm
-              onRegister={handleRegisterEvent}
-              playerRoles={registeredPlayers}
-            />
-          </DialogContent>
-        </Dialog>
-      </main>
+            <Button
+              disabled={buttonIsDisabled}
+              onClick={() => setDialogOpened(true)}
+              className="mt-2 hidden self-start md:inline-block"
+            >
+              Join event
+            </Button>
+
+            <Tabs defaultValue="player" className="mt-6 w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="player">Player list</TabsTrigger>
+                <TabsTrigger value="team">Team list</TabsTrigger>
+              </TabsList>
+              <TabsContent value="player">
+                <PlayersList registeredPlayers={registeredPlayers || []} />
+              </TabsContent>
+              <TabsContent value="team">
+                <TeamList isOwner={isOwner} />
+              </TabsContent>
+            </Tabs>
+          </section>
+
+          <Sheet open={sheetOpened} onOpenChange={setSheetOpened}>
+            <SheetContent side="bottom">
+              <SheetHeader className="text-left">
+                <SheetTitle>Daftar event</SheetTitle>
+              </SheetHeader>
+              <RegisterEventForm
+                onRegister={handleRegisterEvent}
+                playerRoles={registeredPlayers || []}
+              />
+            </SheetContent>
+          </Sheet>
+
+          <Dialog open={dialogOpened} onOpenChange={setDialogOpened}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Daftar event</DialogTitle>
+              </DialogHeader>
+              <RegisterEventForm
+                onRegister={handleRegisterEvent}
+                playerRoles={registeredPlayers || []}
+              />
+            </DialogContent>
+          </Dialog>
+        </main>
+      </EventContext.Provider>
     </>
   );
 };

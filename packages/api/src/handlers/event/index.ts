@@ -6,3 +6,4 @@ export * from './getEventTeams';
 export * from './createTeamForEvent';
 export * from './getPlayersFromEvent';
 export * from './updateEvent';
+export * from './removeRegisteredPlayer';

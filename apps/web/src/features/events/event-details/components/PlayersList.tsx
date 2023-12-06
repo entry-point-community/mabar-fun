@@ -70,6 +70,7 @@ export const PlayersList: React.FC<PlayersListProps> = ({
                 key={registeredPlayer.profileUserId}
                 mlbbUsername={registeredPlayer.player.mlbbUsername as string}
                 role={registeredPlayer.role}
+                playerId={registeredPlayer.player.userId}
               />
             );
           })}

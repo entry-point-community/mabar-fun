@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -113,5 +114,15 @@ export class EventController {
     );
 
     return updatedEvent;
+  }
+
+  @Delete('/:eventId/players/:playerId')
+  @UseGuards(SupabaseGuard)
+  public async removeRegisteredPlayer(
+    @Param('eventId') eventId: number,
+    @Param('playerId') playerId: string,
+    @User() user: AuthUser,
+  ) {
+    await this.eventService.removePlayerFromEvent(eventId, playerId, user.sub);
   }
 }
