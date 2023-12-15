@@ -12,16 +12,24 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { EditProfileDTO, GetMlbbAccountDTO } from '@v6/dto';
+import {
+  EditProfileDTO,
+  GetMlbbAccountDTO,
+  GetRegisteredEvents,
+} from '@v6/dto';
 
 import { SupabaseGuard } from '~/core/auth/supabase/supabase.guard';
 import { AuthUser } from '~/core/auth/types';
 import { User } from '~/core/auth/user.decorator';
+import { PaginationService } from '../pagination/pagination.service';
 import { ProfileService } from './profile.service';
 
 @Controller('profiles')
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly paginationService: PaginationService,
+  ) {}
 
   @Get()
   @UseGuards(SupabaseGuard)
@@ -70,5 +78,19 @@ export class ProfileController {
       );
 
     return mlbbAccountUsername;
+  }
+
+  @Get('/event-registrations')
+  @UseGuards(SupabaseGuard)
+  public async getUserRegisteredEvents(
+    @User() user: AuthUser,
+    @Query() query: GetRegisteredEvents,
+  ) {
+    const { count, records } =
+      await this.profileService.getUserRegisteredEvents(user.sub, query);
+
+    return await this.paginationService.buildPaginationResponse(records, {
+      count,
+    });
   }
 }
