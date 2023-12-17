@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { config } from '~/config';
 import { PrismaService } from '~/lib/prisma.service';
 import { SupabaseService } from '~/lib/supabase.service';
+import { PaginationService } from '../pagination/pagination.service';
 import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
 
@@ -14,6 +15,11 @@ import { ProfileService } from './profile.service';
     }),
   ],
   controllers: [ProfileController],
-  providers: [ProfileService, PrismaService, SupabaseService],
+  providers: [
+    ProfileService,
+    PrismaService,
+    SupabaseService,
+    PaginationService,
+  ],
 })
 export class ProfileModule {}

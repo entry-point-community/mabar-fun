@@ -8,6 +8,7 @@ import { HeadMetaData } from '~/components/meta/HeadMetaData';
 import {
   EditProfileFormInner,
   ProfileDisplaySection,
+  RegisteredEventsList,
 } from '~/features/profile/components';
 import { EditProfileFormSchema } from '~/features/profile/forms/edit-profile';
 import { queryClient } from '~/lib/react-query';
@@ -42,7 +43,7 @@ const ProfilePage = () => {
   return (
     <AuthenticatedRoute>
       <HeadMetaData title="Profile" />
-      <main className="container min-h-screen max-w-screen-md">
+      <main className="container flex min-h-screen max-w-screen-md flex-col gap-8 lg:gap-10">
         {isEditMode ? (
           <>
             <EditProfileFormInner
@@ -53,6 +54,7 @@ const ProfilePage = () => {
         ) : (
           <ProfileDisplaySection onEditProfile={() => setIsEditMode(true)} />
         )}
+        <RegisteredEventsList />
       </main>
     </AuthenticatedRoute>
   );

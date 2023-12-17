@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { MlbbRole, Prisma } from '@prisma/client';
-import { EditProfileDTO } from '@v6/dto';
+import { EditProfileDTO, GetRegisteredEvents } from '@v6/dto';
 
 import { config } from '~/config';
 import { PrismaService } from '~/lib/prisma.service';
@@ -100,5 +100,45 @@ export class ProfileService {
     }
 
     return data.data?.username as string;
+  }
+
+  public async getUserRegisteredEvents(
+    userId: string,
+    query: GetRegisteredEvents,
+  ) {
+    const { limit = 10, page = 1 } = query;
+
+    const paginationParams: Pick<Prisma.EventCountArgs, 'skip' | 'take'> = {
+      skip: (page - 1) * limit,
+      take: limit,
+    };
+
+    const [records, count] = await this.prismaService.$transaction([
+      this.prismaService.eventRegistration.findMany({
+        ...paginationParams,
+        where: {
+          profileUserId: userId,
+        },
+        include: {
+          event: {
+            include: {
+              creator: true,
+              _count: {
+                select: {
+                  EventRegistration: true,
+                },
+              },
+            },
+          },
+        },
+      }),
+      this.prismaService.eventRegistration.count({
+        where: {
+          profileUserId: userId,
+        },
+      }),
+    ]);
+
+    return { records, count };
   }
 }
